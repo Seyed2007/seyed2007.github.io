@@ -2400,7 +2400,7 @@
               </ol>
             </div>
             <figure class="evidence-figure">
-              <img src="scanner.png" width="1671" height="941" alt="Original OpenIPC Viewer screenshot showing the multi-panel stream monitoring interface." loading="lazy" decoding="async">
+              <img src="assets/streamscope-monitoring-redacted.png" width="1671" height="941" alt="Original OpenIPC Viewer screenshot showing the multi-panel stream monitoring interface." loading="lazy" decoding="async">
               <figcaption><span class="evidence-index">EVIDENCE / 02</span><p><strong>Downstream monitoring view.</strong> This is the supplied OpenIPC Viewer screenshot, shown unaltered. It provides visual context for monitoring after discovery and verification; it is not the discovery tool’s own output and does not establish authorization.</p></figcaption>
             </figure>
             <div class="detail-columns">
@@ -2631,22 +2631,5 @@
       document.getElementById("year").textContent = new Date().getFullYear();
     })();
   </script>
-
-  <script>
-    // Hide optional screenshot blocks gracefully when their local image files have not been uploaded yet.
-    document.querySelectorAll('img[src]').forEach((image) => {
-      const hideUnavailableImage = () => {
-        const figure = image.closest('figure');
-        if (figure) {
-          figure.style.display = 'none';
-        } else {
-          image.style.display = 'none';
-        }
-      };
-      image.addEventListener('error', hideUnavailableImage, { once: true });
-      if (image.complete && image.naturalWidth === 0) hideUnavailableImage();
-    });
-  </script>
-
 </body>
 </html>
