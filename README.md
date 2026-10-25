@@ -18,7 +18,7 @@ The page references these local image files. Add them at the listed paths to sho
 
 - `assets/seyed-profile-avatar.jpg`
 - `assets/tailscale-setup.png`
-- `scanner.png`
+- `assets/streamscope-monitoring-redacted.png`
 - `assets/ip-research-pipeline.png`
 - `assets/reconx-lab.jpg`
 
