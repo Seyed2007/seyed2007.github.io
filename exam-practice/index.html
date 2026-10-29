@@ -1,0 +1,450 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Structure Lab — Data Structures Exam Practice</title>
+<style>
+:root {
+  --site-primary: #244FCE;
+  --site-on-primary: #FFFFFF;
+  --site-secondary: #DDE7FF;
+  --site-on-secondary: #192B59;
+  --site-background: #F3F6FC;
+  --site-on-background: #172033;
+  --site-font-body: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  --site-font-heading: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  --site-heading-scale: 1;
+  --site-spacing-scale: 1;
+  --site-radius-scale: 1;
+  --site-decoration-opacity: 1;
+  --surface: light-dark(#FFFFFF, #171E2C);
+  --surface-muted: light-dark(#F7F9FD, #202A3B);
+  --text-muted: light-dark(#5C667A, #AAB5C8);
+  --border: light-dark(#DEE4EF, #354158);
+  --good: light-dark(#167449, #62D6A0);
+  --good-bg: light-dark(#E6F7EE, #15382D);
+  --bad: light-dark(#B42335, #FF9BA4);
+  --bad-bg: light-dark(#FFF0F1, #421F29);
+}
+* { box-sizing: border-box; }
+body {
+  margin: 0;
+  color: light-dark(var(--site-on-background), #EEF2FB);
+  background: light-dark(var(--site-background), #101622);
+  font-family: var(--site-font-body);
+  line-height: 1.55;
+}
+button, input, select, textarea { font: inherit; }
+button { cursor: pointer; }
+button:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-visible, label:has(input:focus-visible) { outline: 3px solid #84A6FF; outline-offset: 2px; }
+#app-root {
+  min-height: 100vh;
+  width: 100%;
+  background-color: var(--site-background);
+  background-color: light-dark(var(--site-background), #101622);
+  color: light-dark(var(--site-on-background), #EEF2FB);
+  border-radius: 0;
+}
+.container { width: min(1120px, calc(100% - 40px)); margin: 0 auto; }
+.topbar { background: var(--site-primary); color: var(--site-on-primary); }
+.nav-inner { display: flex; justify-content: space-between; align-items: center; gap: calc(16px * var(--site-spacing-scale)); min-height: 76px; }
+.brand { display: flex; align-items: center; gap: 12px; font-weight: 800; letter-spacing: .06em; }
+.brand-mark { width: 38px; height: 38px; border-radius: 12px; background: var(--site-on-primary); color: var(--site-primary); display: grid; place-items: center; font-weight: 900; letter-spacing: -.04em; }
+.brand small { display: block; font-size: .72rem; opacity: .78; letter-spacing: .13em; font-weight: 600; }
+.nav-note { color: var(--site-on-primary); opacity: .88; font-size: .88rem; }
+main { padding-bottom: 60px; }
+.hero { padding: calc(42px * var(--site-spacing-scale)) 0 calc(28px * var(--site-spacing-scale)); display: grid; grid-template-columns: minmax(0, 1.3fr) minmax(260px, .7fr); gap: 28px; align-items: center; }
+.eyebrow { text-transform: uppercase; letter-spacing: .14em; font-weight: 800; font-size: .72rem; color: var(--site-primary); }
+h1, h2, h3, p { margin-top: 0; }
+h1 { font-family: var(--site-font-heading); font-size: calc(2.55rem * var(--site-heading-scale)); line-height: 1.08; letter-spacing: -.045em; margin: 10px 0 16px; max-width: 750px; }
+h2 { font-size: calc(1.45rem * var(--site-heading-scale)); letter-spacing: -.025em; margin: 0 0 10px; }
+h3 { font-size: calc(1.08rem * var(--site-heading-scale)); margin: 0 0 8px; }
+.lede { color: var(--text-muted); font-size: 1.04rem; max-width: 660px; margin-bottom: 22px; }
+.stats { display: grid; grid-template-columns: repeat(3, minmax(0,1fr)); gap: 10px; }
+.stat { border: 1px solid var(--border); background: var(--surface); border-radius: calc(14px * var(--site-radius-scale)); padding: 14px; }
+.stat b { display: block; font-size: 1.35rem; letter-spacing: -.035em; }
+.stat span { color: var(--text-muted); font-size: .76rem; }
+.hero-card { border-radius: calc(22px * var(--site-radius-scale)); background: var(--site-secondary); color: var(--site-on-secondary); padding: calc(24px * var(--site-spacing-scale)); position: relative; overflow: hidden; }
+.hero-card::after { content: ""; position: absolute; width: 180px; height: 180px; border: 1px solid currentColor; opacity: calc(.12 * var(--site-decoration-opacity)); border-radius: 50%; right: -50px; bottom: -80px; box-shadow: 0 0 0 22px color-mix(in srgb, currentColor 7%, transparent), 0 0 0 45px color-mix(in srgb, currentColor 4%, transparent); pointer-events: none; }
+.hero-card p { margin: 0; color: color-mix(in srgb, var(--site-on-secondary) 78%, transparent); font-size: .92rem; }
+.hero-card .big-number { font-size: 3rem; font-weight: 850; letter-spacing: -.06em; line-height: 1; margin: 15px 0 10px; }
+.page-section { margin-top: calc(20px * var(--site-spacing-scale)); }
+.panel { border: 1px solid var(--border); border-radius: calc(18px * var(--site-radius-scale)); background: var(--surface); padding: calc(24px * var(--site-spacing-scale)); }
+.section-head { display: flex; justify-content: space-between; gap: 16px; align-items: start; margin-bottom: 20px; }
+.muted { color: var(--text-muted); }
+.small { font-size: .86rem; }
+.settings-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }
+.setting-block { padding: 16px; border: 1px solid var(--border); border-radius: calc(14px * var(--site-radius-scale)); background: var(--surface-muted); }
+.choice-row { display: flex; gap: 10px; margin-top: 10px; flex-wrap: wrap; }
+.mode-choice { flex: 1; min-width: 150px; border: 1px solid var(--border); border-radius: calc(12px * var(--site-radius-scale)); background: var(--surface); padding: 13px; display: flex; align-items: start; gap: 9px; cursor: pointer; }
+.mode-choice:has(input:checked) { border-color: var(--site-primary); box-shadow: 0 0 0 2px color-mix(in srgb, var(--site-primary) 12%, transparent); }
+.mode-choice input { accent-color: var(--site-primary); margin-top: 4px; }
+.mode-choice strong { display: block; font-size: .9rem; }
+.mode-choice span { display: block; color: var(--text-muted); font-size: .78rem; }
+.field-label { display: block; font-weight: 700; font-size: .86rem; margin-bottom: 8px; }
+select, .text-input { background: var(--surface); border: 1px solid var(--border); color: inherit; border-radius: 10px; padding: 10px 12px; width: 100%; }
+.toggle-list { display: grid; gap: 11px; margin-top: 4px; }
+.toggle { display: flex; align-items: center; gap: 10px; font-size: .9rem; cursor: pointer; }
+.toggle input { accent-color: var(--site-primary); width: 17px; height: 17px; }
+.btn { border: 1px solid transparent; border-radius: calc(11px * var(--site-radius-scale)); padding: 12px 17px; font-weight: 750; transition: transform .15s ease, background .15s ease; }
+.btn:hover { transform: translateY(-1px); }
+.btn-primary { background: var(--site-primary); color: var(--site-on-primary); }
+.btn-secondary { background: var(--site-secondary); color: var(--site-on-secondary); }
+.btn-outline { border-color: var(--border); color: inherit; background: var(--surface); }
+.btn-danger { background: var(--bad-bg); color: var(--bad); }
+.start-row { display: flex; align-items: center; justify-content: space-between; gap: 14px; margin-top: 20px; flex-wrap: wrap; }
+.start-note { color: var(--text-muted); font-size: .82rem; }
+.bank-grid { display: grid; grid-template-columns: repeat(5, minmax(0,1fr)); gap: 10px; }
+.bank-tile { border: 1px solid var(--border); background: var(--surface-muted); border-radius: calc(12px * var(--site-radius-scale)); padding: 12px; min-height: 88px; }
+.bank-tile b { display: block; font-size: .8rem; }
+.bank-tile span { display: block; color: var(--text-muted); font-size: .75rem; margin-top: 4px; }
+.footer { border-top: 1px solid var(--border); margin-top: 30px; padding: 20px 0; color: var(--text-muted); font-size: .8rem; }
+.hidden { display: none !important; }
+.quiz-top { padding: 26px 0 10px; display: flex; justify-content: space-between; gap: 15px; align-items: center; flex-wrap: wrap; }
+.quiz-shell { display: grid; grid-template-columns: minmax(0, 1fr) 250px; align-items: start; gap: 20px; }
+.question-panel { background: var(--surface); border: 1px solid var(--border); border-radius: calc(18px * var(--site-radius-scale)); padding: calc(26px * var(--site-spacing-scale)); min-width: 0; }
+.progress-row { display: flex; align-items: center; justify-content: space-between; color: var(--text-muted); font-size: .82rem; gap: 12px; }
+.progress { height: 7px; background: var(--surface-muted); border-radius: 999px; margin: 12px 0 22px; overflow: hidden; }
+.progress-fill { height: 100%; background: var(--site-primary); width: 0; transition: width .2s ease; border-radius: 999px; }
+.q-title-row { display: flex; align-items: start; justify-content: space-between; gap: 12px; }
+.q-number { font-size: .78rem; color: var(--site-primary); text-transform: uppercase; font-weight: 800; letter-spacing: .12em; margin-bottom: 7px; }
+.type-pill { background: var(--surface-muted); border: 1px solid var(--border); padding: 5px 9px; border-radius: 999px; font-size: .73rem; color: var(--text-muted); flex-shrink: 0; }
+.q-prompt { font-size: 1.06rem; white-space: pre-wrap; margin: 10px 0 18px; }
+.code-block { overflow: auto; white-space: pre-wrap; word-break: normal; background: light-dark(#111B2B, #0D121C); color: #E5EDFF; padding: 16px; border-radius: 12px; font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-size: .82rem; line-height: 1.55; margin: 12px 0 18px; }
+.options { display: grid; gap: 9px; }
+.option { display: flex; gap: 11px; align-items: start; padding: 13px 14px; border: 1px solid var(--border); background: var(--surface); border-radius: calc(12px * var(--site-radius-scale)); cursor: pointer; transition: border-color .14s ease, background .14s ease; }
+.option:hover { border-color: color-mix(in srgb, var(--site-primary) 55%, var(--border)); }
+.option:has(input:checked) { border-color: var(--site-primary); background: color-mix(in srgb, var(--site-secondary) 36%, var(--surface)); }
+.option input { flex-shrink: 0; margin-top: 5px; accent-color: var(--site-primary); }
+.letter { display: inline-grid; place-items: center; min-width: 27px; height: 27px; border-radius: 8px; background: var(--surface-muted); border: 1px solid var(--border); font-size: .78rem; font-weight: 850; }
+.option-text { flex: 1; font-size: .92rem; overflow-wrap: anywhere; }
+.option-text code { font-size: .83rem; }
+.answer-input { width: 100%; min-height: 150px; resize: vertical; border: 1px solid var(--border); border-radius: 12px; background: var(--surface-muted); color: inherit; padding: 14px; font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-size: .86rem; line-height: 1.5; }
+.answer-input.short { min-height: 60px; }
+.hint-box { background: var(--surface-muted); border-left: 3px solid var(--site-primary); padding: 12px 14px; margin-top: 16px; border-radius: 0 10px 10px 0; color: var(--text-muted); font-size: .88rem; }
+.q-actions { display: flex; justify-content: space-between; align-items: center; gap: 9px; margin-top: 24px; padding-top: 20px; border-top: 1px solid var(--border); flex-wrap: wrap; }
+.q-actions-left, .q-actions-right { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+.sidebar { position: sticky; top: 16px; }
+.side-panel { border: 1px solid var(--border); border-radius: calc(16px * var(--site-radius-scale)); padding: 17px; background: var(--surface); }
+.side-head { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-bottom: 12px; font-weight: 800; font-size: .9rem; }
+.question-map { display: grid; grid-template-columns: repeat(5, 1fr); gap: 7px; }
+.map-btn { border: 1px solid var(--border); border-radius: 9px; min-height: 38px; background: var(--surface-muted); color: inherit; font-weight: 750; font-size: .8rem; }
+.map-btn.active { background: var(--site-primary); border-color: var(--site-primary); color: var(--site-on-primary); }
+.map-btn.answered { border-color: var(--site-primary); box-shadow: inset 0 -3px 0 var(--site-primary); }
+.map-btn.flagged::after { content: "•"; color: #E6A23C; font-size: 1rem; margin-left: 2px; }
+.legend { margin-top: 14px; color: var(--text-muted); font-size: .76rem; display: grid; gap: 5px; }
+.side-divider { height: 1px; background: var(--border); margin: 16px 0; }
+.side-buttons { display: grid; gap: 8px; }
+.result-hero { background: var(--site-primary); color: var(--site-on-primary); padding: calc(30px * var(--site-spacing-scale)); border-radius: calc(22px * var(--site-radius-scale)); display: grid; grid-template-columns: 1fr auto; gap: 16px; align-items: center; }
+.result-hero h2 { font-size: calc(1.7rem * var(--site-heading-scale)); margin-bottom: 5px; }
+.score-number { font-size: 3.1rem; font-weight: 900; letter-spacing: -.06em; line-height: 1; }
+.score-sub { font-size: .82rem; opacity: .85; text-align: right; }
+.result-stats { display: grid; grid-template-columns: repeat(3, minmax(0,1fr)); gap: 12px; margin: 16px 0 24px; }
+.result-stat { background: var(--surface); border: 1px solid var(--border); border-radius: 13px; padding: 15px; }
+.result-stat b { display: block; font-size: 1.3rem; }
+.result-stat span { color: var(--text-muted); font-size: .78rem; }
+.review-list { display: grid; gap: 12px; }
+.review-item { background: var(--surface); border: 1px solid var(--border); border-radius: calc(14px * var(--site-radius-scale)); padding: 18px; }
+.review-item.correct { border-left: 4px solid var(--good); }
+.review-item.wrong { border-left: 4px solid var(--bad); }
+.review-item h3 { display: flex; justify-content: space-between; gap: 12px; align-items: start; flex-wrap: wrap; }
+.status { border-radius: 999px; padding: 4px 8px; font-size: .72rem; font-weight: 800; }
+.status.good { background: var(--good-bg); color: var(--good); }
+.status.bad { background: var(--bad-bg); color: var(--bad); }
+.status.neutral { background: var(--surface-muted); color: var(--text-muted); }
+.feedback-list { display: grid; gap: 7px; margin: 12px 0; }
+.feedback-line { border-radius: 9px; background: var(--surface-muted); padding: 9px 11px; font-size: .84rem; }
+.feedback-line.correct { border-left: 3px solid var(--good); }
+.feedback-line.wrong { border-left: 3px solid var(--bad); }
+.model-answer { margin-top: 12px; }
+.model-answer summary { color: var(--site-primary); cursor: pointer; font-weight: 800; font-size: .9rem; }
+.model-answer .code-block { margin-bottom: 0; }
+.results-actions { display: flex; gap: 10px; flex-wrap: wrap; margin: 22px 0 10px; }
+.result-note { color: var(--text-muted); font-size: .8rem; margin-top: 12px; }
+.pulse { animation: pulse .2s ease; }
+@keyframes pulse { from { opacity: .7; } to { opacity: 1; } }
+@media (max-width: 850px) {
+  .hero { grid-template-columns: 1fr; }
+  .hero-card { max-width: none; }
+  .quiz-shell { grid-template-columns: 1fr; }
+  .sidebar { position: static; order: -1; }
+  .question-map { grid-template-columns: repeat(8, minmax(0,1fr)); }
+  .settings-grid { grid-template-columns: 1fr; }
+  .bank-grid { grid-template-columns: repeat(3,minmax(0,1fr)); }
+}
+@media (max-width: 540px) {
+  .container { width: min(100% - 24px, 1120px); }
+  .nav-inner { min-height: 64px; }
+  .nav-note { display: none; }
+  .hero { padding-top: 28px; }
+  h1 { font-size: calc(2rem * var(--site-heading-scale)); }
+  .stats { gap: 7px; }
+  .stat { padding: 10px; }
+  .stat b { font-size: 1.08rem; }
+  .panel, .question-panel { padding: 17px; }
+  .bank-grid { grid-template-columns: repeat(2,minmax(0,1fr)); }
+  .question-map { grid-template-columns: repeat(5,minmax(0,1fr)); }
+  .q-actions { align-items: stretch; }
+  .q-actions-left, .q-actions-right { width: 100%; }
+  .q-actions .btn { flex: 1; }
+  .result-hero { grid-template-columns: 1fr; }
+  .score-sub { text-align: left; }
+  .result-stats { grid-template-columns: 1fr 1fr; }
+}
+@media (prefers-reduced-motion: reduce) { *, *::before, *::after { transition: none !important; animation: none !important; scroll-behavior: auto !important; } }
+</style>
+</head>
+<body>
+<div id="app-root">
+  <header class="topbar">
+    <div class="container nav-inner">
+      <div class="brand"><div class="brand-mark">SL</div><div>STRUCTURE LAB<small>DATA STRUCTURES EXAM PRACTICE</small></div></div>
+      <div class="nav-note">Practice · Check · Repeat</div>
+    </div>
+  </header>
+  <main class="container">
+    <section id="home-screen">
+      <div class="hero">
+        <div>
+          <div class="eyebrow">Your personal exam practice</div>
+          <h1>Know the pattern.<br>Own the question.</h1>
+          <p class="lede">Practise all 15 questions from your screenshots, including every original option and both C function questions. Retake the test as often as you like, shuffle it, and review every mistake.</p>
+          <div class="stats">
+            <div class="stat"><b>15</b><span>Original questions</span></div>
+            <div class="stat"><b>∞</b><span>Practice attempts</span></div>
+            <div class="stat"><b>Instant</b><span>Score & review</span></div>
+          </div>
+        </div>
+        <div class="hero-card">
+          <div class="eyebrow" style="color:var(--site-on-secondary)">Personal practice lab</div>
+          <div class="big-number" id="hero-best">—</div>
+          <p id="hero-best-label">Your best result will appear here after your first attempt.</p>
+        </div>
+      </div>
+
+      <section class="panel page-section">
+        <div class="section-head"><div><h2>Set up your session</h2><p class="muted small" style="margin-bottom:0">Choose the length and difficulty style. The original questions stay in the bank.</p></div></div>
+        <div class="settings-grid">
+          <div class="setting-block">
+            <span class="field-label">Quiz length</span>
+            <label class="mode-choice"><input type="radio" name="length" value="15" checked><span><strong>Full exam</strong><span>All 15 questions, in original order</span></span></label>
+            <div class="choice-row">
+              <label class="mode-choice"><input type="radio" name="length" value="5"><span><strong>Quick 5</strong><span>Short practice round</span></span></label>
+              <label class="mode-choice"><input type="radio" name="length" value="10"><span><strong>Quick 10</strong><span>Medium practice round</span></span></label>
+            </div>
+          </div>
+          <div class="setting-block">
+            <span class="field-label">Practice options</span>
+            <div class="toggle-list">
+              <label class="toggle"><input id="shuffle-questions" type="checkbox"> Randomize question order</label>
+              <label class="toggle"><input id="shuffle-options" type="checkbox"> Shuffle answer option order</label>
+              <label class="toggle"><input id="study-mode" type="checkbox"> Study mode: show answer hints during the test</label>
+            </div>
+            <p class="muted small" style="margin:12px 0 0">Exam mode hides help until you submit. Study mode lets you reveal a hint without giving away the answer.</p>
+          </div>
+        </div>
+        <div class="start-row">
+          <span class="start-note">No account required. This preview keeps practice stats in this browser when storage is available.</span>
+          <button class="btn btn-primary" id="start-btn">Start practice →</button>
+        </div>
+      </section>
+
+      <section class="panel page-section">
+        <div class="section-head"><div><h2>Question bank</h2><p class="muted small" style="margin-bottom:0">The full source set, grouped by topic.</p></div><span class="type-pill">15 questions</span></div>
+        <div class="bank-grid">
+          <div class="bank-tile"><b>01 · Stack</b><span>pop operation</span></div>
+          <div class="bank-tile"><b>02 · Queue</b><span>FIFO and operations</span></div>
+          <div class="bank-tile"><b>03 · C function</b><span>List traversal</span></div>
+          <div class="bank-tile"><b>04 · Linked list</b><span>Doubly linked list</span></div>
+          <div class="bank-tile"><b>05 · Stack trace</b><span>Push and pop</span></div>
+          <div class="bank-tile"><b>06 · Stack</b><span>Properties</span></div>
+          <div class="bank-tile"><b>07 · Linked list</b><span>General properties</span></div>
+          <div class="bank-tile"><b>08 · Queue + stack</b><span>Trace the operations</span></div>
+          <div class="bank-tile"><b>09 · C structure</b><span>struct Node</span></div>
+          <div class="bank-tile"><b>10 · Singly list</b><span>Properties</span></div>
+          <div class="bank-tile"><b>11 · C code</b><span>Insert at beginning</span></div>
+          <div class="bank-tile"><b>12 · C output</b><span>Follow pointers</span></div>
+          <div class="bank-tile"><b>13 · Stack output</b><span>peek and pop</span></div>
+          <div class="bank-tile"><b>14 · C code</b><span>Insert at beginning</span></div>
+          <div class="bank-tile"><b>15 · C function</b><span>Remove the tail</span></div>
+        </div>
+      </section>
+      <section class="panel page-section">
+        <div class="section-head"><div><h2>Your practice stats</h2><p class="muted small" style="margin-bottom:0">A simple record of this browser's attempts.</p></div></div>
+        <div class="stats">
+          <div class="stat"><b id="attempt-count">0</b><span>Completed attempts</span></div>
+          <div class="stat"><b id="best-score">—</b><span>Best score</span></div>
+          <div class="stat"><b id="last-score">—</b><span>Last score</span></div>
+        </div>
+        <div style="margin-top:14px"><button id="clear-stats" class="btn btn-outline">Clear saved stats</button></div>
+      </section>
+    </section>
+
+    <section id="quiz-screen" class="hidden">
+      <div class="quiz-top">
+        <div><div class="eyebrow">Active session</div><h2 style="margin:4px 0 0">Exam practice</h2></div>
+        <div class="q-actions-right"><button class="btn btn-outline" id="exit-btn">Exit to home</button></div>
+      </div>
+      <div class="quiz-shell">
+        <article class="question-panel">
+          <div class="progress-row"><span id="question-progress-label">Question 1 of 15</span><span id="answered-label">0 answered</span></div>
+          <div class="progress"><div class="progress-fill" id="progress-fill"></div></div>
+          <div class="q-title-row"><div><div class="q-number" id="question-number">Question 1</div><h2 id="question-title">Title</h2></div><span class="type-pill" id="question-type">Single choice</span></div>
+          <p class="q-prompt" id="question-prompt"></p>
+          <pre class="code-block hidden" id="question-code"></pre>
+          <div id="answer-area"></div>
+          <div id="hint-area" class="hidden"></div>
+          <div class="q-actions">
+            <div class="q-actions-left"><button class="btn btn-outline" id="prev-btn">← Previous</button><button class="btn btn-outline" id="clear-answer-btn">Clear answer</button></div>
+            <div class="q-actions-right"><button class="btn btn-secondary" id="hint-btn">Show hint</button><button class="btn btn-primary" id="next-btn">Next →</button></div>
+          </div>
+          <div class="start-row" style="border-top:1px solid var(--border);padding-top:18px"><span class="start-note">You can change answers before submitting.</span><button class="btn btn-primary" id="submit-btn">Submit test</button></div>
+        </article>
+        <aside class="sidebar">
+          <div class="side-panel">
+            <div class="side-head"><span>Question navigator</span><span class="muted" id="map-total">15 total</span></div>
+            <div class="question-map" id="question-map"></div>
+            <div class="legend"><span>Filled underline = answered</span><span>Amber dot = marked for review</span></div>
+            <div class="side-divider"></div>
+            <div class="side-buttons"><button class="btn btn-outline" id="flag-btn">⚑ Mark for review</button><button class="btn btn-outline" id="review-unanswered-btn">Go to unanswered</button></div>
+          </div>
+        </aside>
+      </div>
+    </section>
+
+    <section id="results-screen" class="hidden">
+      <div class="quiz-top"><div><div class="eyebrow">Attempt complete</div><h2 style="margin:4px 0 0">Results & answer review</h2></div><button class="btn btn-outline" id="results-home-btn">Home</button></div>
+      <div class="result-hero"><div><div class="eyebrow" style="color:var(--site-on-primary);opacity:.8">Your result</div><h2 id="result-title">Test submitted</h2><p id="result-summary" style="margin:0;opacity:.86">Review the answers below.</p></div><div><div class="score-number" id="score-number">0/15</div><div class="score-sub" id="score-percent">0% correct</div></div></div>
+      <div class="result-stats"><div class="result-stat"><b id="result-correct">0</b><span>Correct</span></div><div class="result-stat"><b id="result-wrong">0</b><span>Incorrect or incomplete</span></div><div class="result-stat"><b id="result-skipped">0</b><span>Unanswered</span></div></div>
+      <div class="panel"><div class="section-head"><div><h2>Review your answers</h2><p class="muted small" style="margin:0">Each question includes the expected answer and a short explanation.</p></div></div><div class="review-list" id="review-list"></div></div>
+      <div class="results-actions"><button class="btn btn-primary" id="retry-wrong-btn">Retry missed questions</button><button class="btn btn-secondary" id="retake-btn">Retake this test</button><button class="btn btn-outline" id="new-random-btn">New randomized test</button><button class="btn btn-outline" id="home-bottom-btn">Home</button></div>
+      <p class="result-note">Code questions are checked against key patterns to provide quick feedback. Compare the model answer too: equivalent correct C solutions can differ in formatting or implementation details.</p>
+    </section>
+    <footer class="footer">Structure Lab · Personal study tool · The original question set is available for unlimited practice attempts.</footer>
+  </main>
+</div>
+<script>
+const QUESTIONS = [
+ {id:1,title:"Stack pop",type:"single",topic:"Stack",prompt:"What does the pop operation do in a stack?",options:[
+  {v:"A",t:"Prints the top element."},{v:"B",t:"Removes the top element from the stack."},{v:"C",t:"Adds a new element to the top of the stack."},{v:"D",t:"Adds a new element to the bottom of the stack."},{v:"E",t:"Prints all the elements of the stack."}],correct:["B"],explain:"pop removes the current top element. push adds an element to the top."},
+ {id:2,title:"Standard queue",type:"multi",topic:"Queue",prompt:"Which statements about a standard queue are correct?",options:[
+  {v:"A",t:"A queue follows the FIFO principle."},{v:"B",t:"Enqueue adds an item to the queue, while dequeue removes an item."},{v:"C",t:"A queue follows the LIFO principle."},{v:"D",t:"Deletion is usually performed at the front."},{v:"E",t:"Insertion is usually performed at the rear."}],correct:["A","B","D","E"],explain:"A standard queue uses FIFO: insertion at the rear and removal at the front. LIFO describes a stack."},
+ {id:3,title:"Traverse a singly linked list",type:"code",topic:"C function",prompt:"Given the following node structure, write a C function to traverse a singly linked list and print the data of each node. Do not write the main function. Only write the traverse function.",code:"struct Node {\n    int data;\n    struct Node *next;\n};\n\nExample list: 10 → 20 → 30 → NULL\nExpected output: 10 20 30",correct:[],solution:"void traverse(struct Node *q) {\n    while (q != NULL) {\n        printf(\"%d \", q->data);\n        q = q->next;\n    }\n}",rubric:["Loop stops at NULL","Prints q->data","Advances using q->next"],explain:"Visit the current node, print its data, and advance to the next node until q is NULL."},
+ {id:4,title:"Doubly linked list",type:"multi",topic:"Linked list",prompt:"Which statements about a doubly linked list are correct?",options:[
+  {v:"A",t:"Each node contains a pointer to the previous node."},{v:"B",t:"Traversal can be performed in both forward and backward directions."},{v:"C",t:"Each node always uses less memory than a node in a singly linked list."},{v:"D",t:"Each node contains a pointer to the next node."},{v:"E",t:"A doubly linked list cannot be empty."}],correct:["A","B","D"],explain:"A doubly linked node has next and previous links. The extra pointer normally uses more memory, and an empty list is valid.",note:"Your screenshot displayed partial credit for A, B, D even though those options were marked correct. This site uses the technically correct set A, B, D."},
+ {id:5,title:"Stack operation sequence",type:"multi",topic:"Stack",prompt:"A stack initially contains the elements 10, 20, 30, where 30 is the top element, and performs the following functions in order: Push(40), Pop(), Pop(), and Push(50). Which statements about the final stack are correct?",options:[
+  {v:"A",t:"The top element is 50."},{v:"B",t:"The top element is 20."},{v:"C",t:"The stack contains 10, 20, 30, and 50."},{v:"D",t:"The stack contains 10, 20, and 50."},{v:"E",t:"The stack is empty."}],correct:["A","D"],explain:"push 40 → pop removes 40 → pop removes 30 → push 50. Final stack bottom-to-top: 10, 20, 50."},
+ {id:6,title:"Stack properties",type:"multi",topic:"Stack",prompt:"Which statements about stacks are correct?",options:[
+  {v:"A",t:"A stack always keeps its elements sorted."},{v:"B",t:"A stack can be implemented using a linked list."},{v:"C",t:"A stack follows the FIFO principle."},{v:"D",t:"A stack must always be implemented using an array."},{v:"E",t:"Any element in a stack can be accessed directly by its index without removing the elements above it."},{v:"F",t:"A stack follows the LIFO principle."}],correct:["B","F"],explain:"A stack can be implemented with an array or linked list and follows LIFO. The other statements are not general properties of a stack."},
+ {id:7,title:"Linked-list properties",type:"multi",topic:"Linked list",prompt:"Which statements about linked lists are correct?",options:[
+  {v:"A",t:"A linked list can only store integers."},{v:"B",t:"A linked list can grow dynamically during program execution."},{v:"C",t:"A linked list stores elements in contiguous memory locations."},{v:"D",t:"Insertion and deletion can be efficient because elements do not need to be shifted like in an array."},{v:"E",t:"Each node contains data and a pointer to another node."},{v:"F",t:"A linked list is a data structure made up of nodes."}],correct:["B","D","E","F"],explain:"Linked lists are node-based and can grow dynamically. Updating links can avoid shifting array elements, although finding a target position may still require traversal."},
+ {id:8,title:"Queue and stack together",type:"single",topic:"Queue + stack",prompt:"A queue initially contains 2, 4, 6, 8, 10, from front to rear. An empty stack is available. What value will be printed after performing the following operations in order?\n\n1. Dequeue the first two elements and push each onto the stack.\n2. Pop one element from the stack and enqueue it at the rear of the queue.\n3. Dequeue one element from the queue and print it.",options:[
+  {v:"A",t:"4"},{v:"B",t:"2"},{v:"C",t:"10"},{v:"D",t:"6"},{v:"E",t:"8"}],correct:["D"],explain:"The queue becomes 6, 8, 10, 4 after the pop-and-enqueue step. The next dequeued value is 6."},
+ {id:9,title:"C struct Node",type:"multi",topic:"C structures",prompt:"Which statements are correct about the following C structure?",code:"struct Node\n{\n    int data;\n    struct Node *next;\n};",options:[
+  {v:"A",t:"The structure can be used to build a circular singly linked list."},{v:"B",t:"The structure can be used to build a doubly linked list."},{v:"C",t:"next stores a pointer to another node."},{v:"D",t:"The code has at least one compile-time error."},{v:"E",t:"The structure can be used to build a singly linked list."},{v:"F",t:"data stores an integer value."}],correct:["A","C","E","F"],explain:"The declared structure has an integer data field and a next pointer. The next pointer can form ordinary or circular singly linked lists."},
+ {id:10,title:"Singly linked list",type:"multi",topic:"Linked list",prompt:"Which statements about a singly linked list are correct?",options:[
+  {v:"A",t:"Each node contains a pointer to the next node."},{v:"B",t:"The size of a singly linked list is fixed at the time of its creation and cannot be modified."},{v:"C",t:"Singly linked lists provide constant-time random access to elements by index."},{v:"D",t:"Each node contains a pointer to the previous node."},{v:"E",t:"A singly linked list can grow or shrink dynamically."},{v:"F",t:"The last node points to NULL."},{v:"G",t:"Accessing a specific node generally requires sequential traversal."},{v:"H",t:"Traversing a singly linked list in reverse order is as straightforward as traversing it in the forward direction."}],correct:["A","E","F","G"],explain:"A singly linked node links to the next node only. The list can change size, ends at NULL, and generally needs sequential traversal to reach a later node."},
+ {id:11,title:"Insert at the beginning",type:"multi",topic:"C code",prompt:"Consider the following code. Which statements are correct?",code:"1. struct Node {\n2.     int data;\n3.     struct Node *next;\n4. };\n5. struct Node *head = NULL;\n6. void insert(int value) {\n7.     struct Node *newNode = (struct Node *)malloc(sizeof(struct Node));\n8.     newNode->data = value;\n9.     newNode->next = head;\n10.    head = newNode;\n11. }",options:[
+  {v:"A",t:"The function inserts a node at the end of the list."},{v:"B",t:"Line 9 connects the new node to the first node."},{v:"C",t:"The function requires the list to contain at least one node."},{v:"D",t:"The function inserts a node at the beginning of the list."},{v:"E",t:"Memory is allocated dynamically."},{v:"F",t:"The code contains at least one compile-time error."},{v:"G",t:"If head is NULL, the new node becomes the only node in the list."}],correct:["B","D","E","G"],explain:"Line 9 links the new node to the old head, and line 10 makes it the new head. It works when the list is empty too."},
+ {id:12,title:"C code output",type:"single",topic:"C output",prompt:"What does the following C code print?",code:"struct Node {\n    int data;\n    struct Node *next;\n};\n\nint main(void) {\n    struct Node c = {30, NULL};\n    struct Node b = {20, &c};\n    struct Node a = {10, &b};\n    struct Node *head = &a;\n    printf(\"%d\", head->next->data);\n    return 0;\n}",options:[
+  {v:"A",t:"Nothing"},{v:"B",t:"10"},{v:"C",t:"20"},{v:"D",t:"0"},{v:"E",t:"30"},{v:"F",t:"Code has at least one compile-time error."}],correct:["C"],explain:"head points to a (data 10). head->next points to b, whose data is 20."},
+ {id:13,title:"push(), pop(), peek()",type:"text",topic:"Stack output",prompt:"Assume push(), pop(), and peek() functions are already implemented, and the stack is empty at the beginning. What is the output of the following code?",code:"int main() {\n    push(10);\n    push(20);\n    push(30);\n    cout << peek();\n    pop();\n    pop();\n    cout << peek();\n    pop();\n    return 0;\n}",correctText:"3010",explain:"The first peek prints 30. Two pops remove 30 and 20, so the second peek prints 10. No spaces are printed between the values."},
+ {id:14,title:"Insert a node at the beginning",type:"single",topic:"C code",prompt:"Which code correctly inserts a new node at the beginning of a singly linked list, assuming newNode has already been allocated and head is the head pointer?",options:[
+  {v:"A",t:"newNode->data = head->data;\nhead = NULL;"},{v:"B",t:"newNode->next = NULL;\nhead = head->next;"},{v:"C",t:"newNode->next = head;\nhead = newNode;"},{v:"D",t:"head = newNode;\nnewNode->next = head;"},{v:"E",t:"head->next = newNode;\nnewNode = head;"}],correct:["C"],explain:"First link the new node to the old head; then update head to point to the new node."},
+ {id:15,title:"Remove the tail node",type:"code",topic:"C function",prompt:"Given the following node structure, write a C function to remove the tail node of a singly linked list. Do not write main().",code:"struct Node {\n    int data;\n    struct Node *next;\n};\n\nExample setup from the question:\nstruct Node *head = NULL;\nstruct Node *n1 = malloc(sizeof(struct Node));\nstruct Node *n2 = malloc(sizeof(struct Node));\nstruct Node *n3 = malloc(sizeof(struct Node));\nn1->data = 10; n1->next = n2;\nn2->data = 20; n2->next = n3;\nn3->data = 30; n3->next = NULL;\nhead = n1;\nremoveTail(&head);\n\nInitial list: 10 20 30\nAfter deleting the tail: 10 20",correct:[],solution:"void removeTail(struct Node **head) {\n    if (head == NULL || *head == NULL) {\n        return;\n    }\n\n    if ((*head)->next == NULL) {\n        free(*head);\n        *head = NULL;\n        return;\n    }\n\n    struct Node *current = *head;\n    while (current->next->next != NULL) {\n        current = current->next;\n    }\n\n    free(current->next);\n    current->next = NULL;\n}",rubric:["Handles empty list","Handles single-node list","Finds node before tail","Frees tail node","Sets new tail's next to NULL"],explain:"For a list with multiple nodes, find the second-to-last node, free the old tail, and set its predecessor's next pointer to NULL. Handle empty and single-node lists separately."}
+];
+
+const $ = id => document.getElementById(id);
+const screens = {home:$('home-screen'),quiz:$('quiz-screen'),results:$('results-screen')};
+let state = {questions:[], index:0, answers:{}, flagged:new Set(), hints:new Set(), submitted:false, sourceIds:[], lastResults:null};
+const ORIGINAL_ORDER = QUESTIONS.map(q=>q.id);
+function safeLoadStats(){ try { return JSON.parse(localStorage.getItem('structureLabStats') || '{"attempts":0,"best":null,"last":null}'); } catch(e) { return {attempts:0,best:null,last:null}; } }
+function saveStats(stats){ try { localStorage.setItem('structureLabStats',JSON.stringify(stats)); } catch(e) {} }
+function displayStats(){ const s=safeLoadStats(); $('attempt-count').textContent=s.attempts||0; $('best-score').textContent=s.best==null?'—':`${s.best}%`; $('last-score').textContent=s.last==null?'—':`${s.last}%`; $('hero-best').textContent=s.best==null?'Ready?':`${s.best}%`; $('hero-best-label').textContent=s.best==null?'Your best result will appear here after your first attempt.':'Best result across saved attempts. Keep practising to improve it.'; }
+function showScreen(name){ Object.values(screens).forEach(el=>el.classList.add('hidden')); screens[name].classList.remove('hidden'); window.scrollTo({top:0,behavior:'smooth'}); }
+function shuffle(arr){ const a=[...arr]; for(let i=a.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [a[i],a[j]]=[a[j],a[i]]; } return a; }
+function selectedLength(){ return Number(document.querySelector('input[name="length"]:checked')?.value || 15); }
+function startQuiz(ids=null,opts={}){
+ const length = ids ? ids.length : selectedLength();
+ let chosen = ids ? ids.map(id=>QUESTIONS.find(q=>q.id===id)).filter(Boolean) : [...QUESTIONS];
+ if(!ids && length < chosen.length) chosen=shuffle(chosen).slice(0,length);
+ if($('shuffle-questions').checked || opts.shuffleQuestions) chosen=shuffle(chosen);
+ state={questions:chosen.map(q=>({...q, options:(q.options && ($('shuffle-options').checked || opts.shuffleOptions))?shuffle(q.options):q.options})),index:0,answers:{},flagged:new Set(),hints:new Set(),submitted:false,sourceIds:chosen.map(q=>q.id),lastResults:null};
+ $('map-total').textContent=`${state.questions.length} total`;
+ showScreen('quiz'); renderQuestion();
+}
+function currentQuestion(){return state.questions[state.index];}
+function isAnswered(q){const a=state.answers[q.id]; if(q.type==='multi') return Array.isArray(a)&&a.length>0; return typeof a==='string'&&a.trim().length>0;}
+function answeredCount(){return state.questions.filter(isAnswered).length;}
+function renderMap(){const map=$('question-map'); map.innerHTML=''; state.questions.forEach((q,i)=>{const b=document.createElement('button');b.type='button';b.className='map-btn'+(i===state.index?' active':'')+(isAnswered(q)?' answered':'')+(state.flagged.has(q.id)?' flagged':'');b.textContent=String(i+1);b.title=`Question ${i+1}${isAnswered(q)?' · answered':''}${state.flagged.has(q.id)?' · marked for review':''}`;b.addEventListener('click',()=>{state.index=i;renderQuestion();});map.appendChild(b);});}
+function renderQuestion(){
+ const q=currentQuestion(); if(!q)return;
+ $('question-progress-label').textContent=`Question ${state.index+1} of ${state.questions.length}`;
+ $('answered-label').textContent=`${answeredCount()} answered`;
+ $('progress-fill').style.width=`${((state.index+1)/state.questions.length)*100}%`;
+ $('question-number').textContent=`Question ${state.index+1}`;
+ $('question-title').textContent=q.title;
+ $('question-type').textContent=q.type==='single'?'Select one':q.type==='multi'?'Select one or more':q.type==='code'?'Write C code':'Enter exact output';
+ $('question-prompt').textContent=q.prompt;
+ const code=$('question-code'); if(q.code){code.textContent=q.code;code.classList.remove('hidden');} else {code.textContent='';code.classList.add('hidden');}
+ const area=$('answer-area');area.innerHTML=''; const saved=state.answers[q.id];
+ if(q.type==='single'||q.type==='multi'){
+   const list=document.createElement('div');list.className='options';
+   q.options.forEach(o=>{const label=document.createElement('label');label.className='option';const input=document.createElement('input');input.type=q.type==='single'?'radio':'checkbox';input.name=`answer-${q.id}`;input.value=o.v;input.checked=q.type==='single'?saved===o.v:Array.isArray(saved)&&saved.includes(o.v);input.addEventListener('change',()=>{if(q.type==='single'){state.answers[q.id]=o.v;}else{const prev=Array.isArray(state.answers[q.id])?[...state.answers[q.id]]:[];state.answers[q.id]=input.checked?[...prev.filter(v=>v!==o.v),o.v]:prev.filter(v=>v!==o.v);} renderMap();$('answered-label').textContent=`${answeredCount()} answered`;});const letter=document.createElement('span');letter.className='letter';letter.textContent=o.v;const text=document.createElement('span');text.className='option-text';text.textContent=o.t;label.append(input,letter,text);list.appendChild(label);});area.appendChild(list);
+ }else{
+   const ta=document.createElement('textarea');ta.className='answer-input'+(q.type==='text'?' short':'');ta.placeholder=q.type==='code'?'Write your C function here…':'Enter output exactly, e.g. 3010';ta.value=saved||'';ta.setAttribute('aria-label',q.type==='code'?'C function answer':'Exact program output');ta.addEventListener('input',()=>{state.answers[q.id]=ta.value;$('answered-label').textContent=`${answeredCount()} answered`;renderMap();});area.appendChild(ta);
+ }
+ $('prev-btn').disabled=state.index===0;
+ $('next-btn').textContent=state.index===state.questions.length-1?'Finish questions →':'Next →';
+ $('flag-btn').textContent=state.flagged.has(q.id)?'⚑ Remove review mark':'⚑ Mark for review';
+ $('hint-btn').classList.toggle('hidden',!$('study-mode').checked);
+ const hintArea=$('hint-area'); if(state.hints.has(q.id)&&$('study-mode').checked){hintArea.className='hint-box';hintArea.textContent=hintFor(q);}else{hintArea.className='hidden';hintArea.textContent='';}
+ renderMap();
+}
+function hintFor(q){ const hints={1:'Think about removing an item from the top of a pile.',2:'Compare the order of arrival with the order of removal.',3:'Print the current node before following its next pointer.',4:'A doubly linked node has links in both directions.',5:'Write down the stack after every operation, from bottom to top.',6:'Remember the order in which stack elements are removed.',7:'Think about dynamic allocation and whether links require adjacent memory.',8:'Track the queue front and stack top separately.',9:'Read the declared member types and pointer fields.',10:'Recall how the list terminates and how a node is reached by index.',11:'Follow the pointer assignments in the order they execute.',12:'Follow head to the next node before accessing data.',13:'A read of the top is different from removing the top.',14:'Keep the old head reachable until the new node is connected.',15:'The predecessor of the tail must be relinked after freeing the tail.'};return hints[q.id]||'Read each condition and test each option against it.'; }
+$('start-btn').addEventListener('click',()=>startQuiz());
+$('prev-btn').addEventListener('click',()=>{if(state.index>0){state.index--;renderQuestion();}});
+$('next-btn').addEventListener('click',()=>{if(state.index<state.questions.length-1){state.index++;renderQuestion();}else submitQuiz();});
+$('clear-answer-btn').addEventListener('click',()=>{delete state.answers[currentQuestion().id];renderQuestion();});
+$('hint-btn').addEventListener('click',()=>{if(!$('study-mode').checked)return;const q=currentQuestion();if(state.hints.has(q.id))state.hints.delete(q.id);else state.hints.add(q.id);renderQuestion();});
+$('flag-btn').addEventListener('click',()=>{const id=currentQuestion().id;if(state.flagged.has(id))state.flagged.delete(id);else state.flagged.add(id);renderQuestion();});
+$('review-unanswered-btn').addEventListener('click',()=>{const i=state.questions.findIndex(q=>!isAnswered(q));if(i>=0){state.index=i;renderQuestion();}else{alert('You have answered every question in this session. You can submit the test now.');}});
+$('exit-btn').addEventListener('click',()=>{if(confirm('Exit this attempt? Your answers in the current attempt will be discarded.')){showScreen('home');displayStats();}});
+$('submit-btn').addEventListener('click',()=>{const unanswered=state.questions.filter(q=>!isAnswered(q)).length;const msg=unanswered?`You have ${unanswered} unanswered question(s). Submit anyway?`:'Submit and mark this test?';if(confirm(msg))submitQuiz();});
+function normalize(s){return String(s||'').toLowerCase().replace(/\s+/g,'').replace(/\r/g,'');}
+function evaluateCode(q,raw){
+ const n=normalize(raw);
+ if(!n)return {score:0,max:1,correct:false,summary:'No code submitted.',kind:'code'};
+ if(q.id===3){const loop=/while\(([^)]*)\)/.exec(n);const safeLoop=!!loop&&(/q!=null/.test(loop[1])||/^q$/.test(loop[1])||/null!=q/.test(loop[1]));const prints=/printf\([^)]*q->data/.test(n);const advances=/q=q->next;?/.test(n);const ok=safeLoop&&prints&&advances;return {score:ok?1:0,max:1,correct:ok,kind:'code',summary:ok?'Core traversal pattern detected.':'Check for a loop that stops at NULL, prints q->data, and advances with q = q->next.'};}
+ if(q.id===15){const hasEmpty=/head==null/.test(n)&&(/\*head==null/.test(n)||/\*head\)==null/.test(n)||/!\*head/.test(n));const hasSingle=/\(\*head\)->next==null/.test(n)||/current->next==null/.test(n);const findsPrev=/current->next->next!=null/.test(n)||/current->next->next\)/.test(n);const frees=/free\(current->next\)/.test(n)||/free\(\*head\)/.test(n);const cuts=/current->next=null/.test(n)||/current->next=NULL/.test(n);const ok=hasEmpty&&hasSingle&&findsPrev&&frees&&cuts;return {score:ok?1:0,max:1,correct:ok,kind:'code',summary:ok?'The expected edge cases and tail-removal steps were detected.':'Check empty and single-node cases, finding the predecessor, freeing the tail, and setting the new tail link to NULL.'};}
+ return {score:0,max:1,correct:false,kind:'code',summary:'Compare against the model solution.'};
+}
+function gradeQuestion(q){const a=state.answers[q.id];if(q.type==='single'||q.type==='multi'){const selected=q.type==='multi'?(Array.isArray(a)?a:[]):(a?[a]:[]);const expected=q.correct;const ok=selected.length===expected.length&&expected.every(x=>selected.includes(x));return {correct:ok,score:ok?1:0,max:1,selected,expected,kind:q.type};}if(q.type==='text'){const ok=normalize(a)==='3010';return {correct:ok,score:ok?1:0,max:1,selected:a||'',expected:q.correctText,kind:'text'};}return evaluateCode(q,a);}
+function escapeHtml(s){return String(s).replace(/[&<>"']/g,ch=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]));}
+function prettyOption(q,v){const o=(q.options||[]).find(x=>x.v===v);return o?`${o.v}. ${o.t}`:v;}
+function submitQuiz(){
+ state.submitted=true;const results=state.questions.map(q=>({q,grade:gradeQuestion(q),answer:state.answers[q.id]}));const score=results.reduce((s,r)=>s+r.grade.score,0);const max=results.length;const percent=Math.round((score/max)*100);const correct=results.filter(r=>r.grade.correct).length;const skipped=results.filter(r=>!isAnswered(r.q)).length;const stats=safeLoadStats();stats.attempts=(stats.attempts||0)+1;stats.best=stats.best==null?percent:Math.max(stats.best,percent);stats.last=percent;saveStats(stats);displayStats();state.lastResults=results;
+ $('score-number').textContent=`${score}/${max}`;$('score-percent').textContent=`${percent}% correct`;$('result-correct').textContent=correct;$('result-wrong').textContent=max-correct-skipped;$('result-skipped').textContent=skipped;
+ let msg=percent>=90?'Excellent recall. Review any missed details before the exam.':percent>=70?'Good progress. Review the missed questions and try another round.':percent>=50?'You have a base to build on. Repeat the missed questions, then retake the test.':'Use the answer review to strengthen the trigger-word patterns, then retry.';$('result-summary').textContent=msg;$('result-title').textContent=percent>=90?'Strong result':percent>=70?'Good progress':'Practice round complete';
+ renderReview(results);showScreen('results');
+}
+function renderReview(results){const root=$('review-list');root.innerHTML='';results.forEach((r,i)=>{const {q,grade:g,answer}=r;const item=document.createElement('article');item.className='review-item '+(g.correct?'correct':'wrong');const h=document.createElement('h3');const title=document.createElement('span');title.textContent=`${i+1}. ${q.title}`;const status=document.createElement('span');status.className='status '+(g.correct?'good':'bad');status.textContent=g.correct?'Correct':(!isAnswered(q)?'Unanswered':'Review');h.append(title,status);item.appendChild(h);const p=document.createElement('p');p.className='muted small';p.textContent=q.prompt;item.appendChild(p);if(q.code){const code=document.createElement('pre');code.className='code-block';code.textContent=q.code;item.appendChild(code);}
+ if(q.type==='single'||q.type==='multi'){
+  const chosen=Array.isArray(g.selected)?g.selected:[];const list=document.createElement('div');list.className='feedback-list';q.options.forEach(o=>{const line=document.createElement('div');const isExpected=q.correct.includes(o.v);const isChosen=chosen.includes(o.v);line.className='feedback-line '+(isExpected?'correct':isChosen?'wrong':'');line.textContent=`${isChosen?'Your selection · ':''}${isExpected?'Expected · ':''}${o.v}. ${o.t}${isChosen&&!isExpected?' — selected but not expected':''}`;list.appendChild(line);});item.appendChild(list);const exp=document.createElement('p');exp.textContent=q.explain;item.appendChild(exp);if(q.note){const n=document.createElement('p');n.className='result-note';n.textContent=q.note;item.appendChild(n);}
+ }else if(q.type==='text'){
+  const you=document.createElement('p');you.innerHTML='<strong>Your output:</strong> '+escapeHtml(answer||'(blank)');item.appendChild(you);const expected=document.createElement('p');expected.innerHTML='<strong>Expected output:</strong> '+escapeHtml(q.correctText);item.appendChild(expected);const exp=document.createElement('p');exp.textContent=q.explain;item.appendChild(exp);
+ }else{
+  const you=document.createElement('pre');you.className='code-block';you.textContent=answer||'(no code submitted)';item.appendChild(you);const summary=document.createElement('p');summary.textContent=g.summary;item.appendChild(summary);const details=document.createElement('details');details.className='model-answer';const summaryTag=document.createElement('summary');summaryTag.textContent='Show model answer';details.appendChild(summaryTag);const model=document.createElement('pre');model.className='code-block';model.textContent=q.solution;details.appendChild(model);item.appendChild(details);const exp=document.createElement('p');exp.textContent=q.explain;item.appendChild(exp);if(q.rubric){const ul=document.createElement('ul');q.rubric.forEach(x=>{const li=document.createElement('li');li.textContent=x;ul.appendChild(li);});item.appendChild(ul);}
+ }
+ root.appendChild(item);});}
+function retryIds(ids){if(!ids.length){alert('No missed questions in that session.');return;}startQuiz(ids,{shuffleQuestions:false,shuffleOptions:false});}
+$('retry-wrong-btn').addEventListener('click',()=>retryIds((state.lastResults||[]).filter(r=>!r.grade.correct).map(r=>r.q.id)));
+$('retake-btn').addEventListener('click',()=>startQuiz(state.sourceIds,{shuffleQuestions:false,shuffleOptions:false}));
+$('new-random-btn').addEventListener('click',()=>{document.querySelector('input[name="length"][value="15"]').checked=true;$('shuffle-questions').checked=true;$('shuffle-options').checked=true;startQuiz();});
+const goHome=()=>{showScreen('home');displayStats();};$('results-home-btn').addEventListener('click',goHome);$('home-bottom-btn').addEventListener('click',goHome);
+$('clear-stats').addEventListener('click',()=>{if(confirm('Clear saved attempt count and scores in this browser?')){saveStats({attempts:0,best:null,last:null});displayStats();}});
+displayStats();
+</script>
+</body>
+</html>
