@@ -6,6 +6,7 @@
 <title>Structure Lab — Data Structures Exam Practice</title>
 <style>
 :root {
+  color-scheme: light dark;
   --site-primary: #244FCE;
   --site-on-primary: #FFFFFF;
   --site-secondary: #DDE7FF;
@@ -53,6 +54,9 @@ button:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-
 .brand-mark { width: 38px; height: 38px; border-radius: 12px; background: var(--site-on-primary); color: var(--site-primary); display: grid; place-items: center; font-weight: 900; letter-spacing: -.04em; }
 .brand small { display: block; font-size: .72rem; opacity: .78; letter-spacing: .13em; font-weight: 600; }
 .nav-note { color: var(--site-on-primary); opacity: .88; font-size: .88rem; }
+.nav-actions { display: flex; align-items: center; gap: 14px; }
+.theme-toggle { border: 1px solid rgba(255,255,255,.5); border-radius: 10px; padding: 8px 12px; background: transparent; color: #FFFFFF; font-weight: 750; white-space: nowrap; }
+.theme-toggle:hover { background: rgba(255,255,255,.12); }
 main { padding-bottom: 60px; }
 .hero { padding: calc(42px * var(--site-spacing-scale)) 0 calc(28px * var(--site-spacing-scale)); display: grid; grid-template-columns: minmax(0, 1.3fr) minmax(260px, .7fr); gap: 28px; align-items: center; }
 .eyebrow { text-transform: uppercase; letter-spacing: .14em; font-weight: 800; font-size: .72rem; color: var(--site-primary); }
@@ -200,7 +204,7 @@ select, .text-input { background: var(--surface); border: 1px solid var(--border
   <header class="topbar">
     <div class="container nav-inner">
       <div class="brand"><div class="brand-mark">SL</div><div>STRUCTURE LAB<small>DATA STRUCTURES EXAM PRACTICE</small></div></div>
-      <div class="nav-note">Practice · Check · Repeat</div>
+      <div class="nav-actions"><div class="nav-note">Practice · Check · Repeat</div><button class="theme-toggle" id="theme-toggle" type="button" aria-pressed="false">☾ Night mode</button></div>
     </div>
   </header>
   <main class="container">
@@ -241,6 +245,12 @@ select, .text-input { background: var(--surface); border: 1px solid var(--border
               <label class="toggle"><input id="shuffle-options" type="checkbox"> Shuffle answer option order</label>
               <label class="toggle"><input id="study-mode" type="checkbox"> Study mode: show answer hints during the test</label>
             </div>
+            <label class="field-label" for="grading-mode" style="margin-top:16px">Answer key</label>
+            <select id="grading-mode">
+              <option value="theory">Standard data-structure theory (Q4: A, B, D)</option>
+              <option value="platform">Original exam platform estimate (Q4: A, B, D, E)</option>
+            </select>
+            <p class="muted small" style="margin:8px 0 0">The platform key is inferred from your partial score; option E is still technically false.</p>
             <p class="muted small" style="margin:12px 0 0">Exam mode hides help until you submit. Study mode lets you reveal a hint without giving away the answer.</p>
           </div>
         </div>
@@ -332,7 +342,7 @@ const QUESTIONS = [
   {v:"A",t:"A queue follows the FIFO principle."},{v:"B",t:"Enqueue adds an item to the queue, while dequeue removes an item."},{v:"C",t:"A queue follows the LIFO principle."},{v:"D",t:"Deletion is usually performed at the front."},{v:"E",t:"Insertion is usually performed at the rear."}],correct:["A","B","D","E"],explain:"A standard queue uses FIFO: insertion at the rear and removal at the front. LIFO describes a stack."},
  {id:3,title:"Traverse a singly linked list",type:"code",topic:"C function",prompt:"Given the following node structure, write a C function to traverse a singly linked list and print the data of each node. Do not write the main function. Only write the traverse function.",code:"struct Node {\n    int data;\n    struct Node *next;\n};\n\nExample list: 10 → 20 → 30 → NULL\nExpected output: 10 20 30",correct:[],solution:"void traverse(struct Node *q) {\n    while (q != NULL) {\n        printf(\"%d \", q->data);\n        q = q->next;\n    }\n}",rubric:["Loop stops at NULL","Prints q->data","Advances using q->next"],explain:"Visit the current node, print its data, and advance to the next node until q is NULL."},
  {id:4,title:"Doubly linked list",type:"multi",topic:"Linked list",prompt:"Which statements about a doubly linked list are correct?",options:[
-  {v:"A",t:"Each node contains a pointer to the previous node."},{v:"B",t:"Traversal can be performed in both forward and backward directions."},{v:"C",t:"Each node always uses less memory than a node in a singly linked list."},{v:"D",t:"Each node contains a pointer to the next node."},{v:"E",t:"A doubly linked list cannot be empty."}],correct:["A","D"],explain:"For matching the original quiz platform\u2019s apparent grading, select A and D. B is true under standard data-structure definitions, but the screenshot\u2019s partial score and visible correct marks suggest the platform may not credit B. C and E are false.",note:"Exam-platform key inferred from the screenshot: A and D. Theory note: B is also true, so the original question\u2019s grading appears inconsistent or flawed."},
+  {v:"A",t:"Each node contains a pointer to the previous node."},{v:"B",t:"Traversal can be performed in both forward and backward directions."},{v:"C",t:"Each node always uses less memory than a node in a singly linked list."},{v:"D",t:"Each node contains a pointer to the next node."},{v:"E",t:"A doubly linked list cannot be empty."}],correct:["A","B","D"],explain:"In standard data-structure theory, A, B, and D are true. E is false because an empty doubly linked list is valid. Your original score of 5.25/7 suggests the platform may have treated E as an additional correct option; use the answer-key selector to practise that estimated platform key.",note:"Theory key: A, B, D. Original-platform estimate: A, B, D, E. E is technically false, so the original grading appears inconsistent or flawed."},
  {id:5,title:"Stack operation sequence",type:"multi",topic:"Stack",prompt:"A stack initially contains the elements 10, 20, 30, where 30 is the top element, and performs the following functions in order: Push(40), Pop(), Pop(), and Push(50). Which statements about the final stack are correct?",options:[
   {v:"A",t:"The top element is 50."},{v:"B",t:"The top element is 20."},{v:"C",t:"The stack contains 10, 20, 30, and 50."},{v:"D",t:"The stack contains 10, 20, and 50."},{v:"E",t:"The stack is empty."}],correct:["A","D"],explain:"push 40 → pop removes 40 → pop removes 30 → push 50. Final stack bottom-to-top: 10, 20, 50."},
  {id:6,title:"Stack properties",type:"multi",topic:"Stack",prompt:"Which statements about stacks are correct?",options:[
@@ -370,7 +380,7 @@ function startQuiz(ids=null,opts={}){
  let chosen = ids ? ids.map(id=>QUESTIONS.find(q=>q.id===id)).filter(Boolean) : [...QUESTIONS];
  if(!ids && length < chosen.length) chosen=shuffle(chosen).slice(0,length);
  if($('shuffle-questions').checked || opts.shuffleQuestions) chosen=shuffle(chosen);
- state={questions:chosen.map(q=>({...q, options:(q.options && ($('shuffle-options').checked || opts.shuffleOptions))?shuffle(q.options):q.options})),index:0,answers:{},flagged:new Set(),hints:new Set(),submitted:false,sourceIds:chosen.map(q=>q.id),lastResults:null};
+ state={questions:chosen.map(q=>({...q, correct:q.id===4 && $('grading-mode').value==='platform'?["A","B","D","E"]:q.correct, options:(q.options && ($('shuffle-options').checked || opts.shuffleOptions))?shuffle(q.options):q.options})),index:0,answers:{},flagged:new Set(),hints:new Set(),submitted:false,sourceIds:chosen.map(q=>q.id),lastResults:null};
  $('map-total').textContent=`${state.questions.length} total`;
  showScreen('quiz'); renderQuestion();
 }
@@ -445,6 +455,10 @@ $('new-random-btn').addEventListener('click',()=>{document.querySelector('input[
 const goHome=()=>{showScreen('home');displayStats();};$('results-home-btn').addEventListener('click',goHome);$('home-bottom-btn').addEventListener('click',goHome);
 $('clear-stats').addEventListener('click',()=>{if(confirm('Clear saved attempt count and scores in this browser?')){saveStats({attempts:0,best:null,last:null});displayStats();}});
 displayStats();
+function applyTheme(mode,persist=true){const theme=mode==='dark'?'dark':'light';document.documentElement.style.colorScheme=theme;document.documentElement.dataset.theme=theme;const button=$('theme-toggle');if(button){button.textContent=theme==='dark'?'☀ Light mode':'☾ Night mode';button.setAttribute('aria-pressed',String(theme==='dark'));}if(persist){try{localStorage.setItem('structureLabTheme',theme);}catch(e){}}}
+function loadTheme(){let saved=null;try{saved=localStorage.getItem('structureLabTheme');}catch(e){}if(saved!=='dark'&&saved!=='light')saved=window.matchMedia&&window.matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light';applyTheme(saved,false);}
+loadTheme();
+$('theme-toggle').addEventListener('click',()=>applyTheme(document.documentElement.dataset.theme==='dark'?'light':'dark'));
 </script>
 </body>
 </html>
