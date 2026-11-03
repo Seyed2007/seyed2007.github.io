@@ -1,0 +1,621 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="Computing Systems exam: 35 multiple-choice questions. Press Start Exam to begin.">
+<title>Computing Systems — Start Exam</title>
+<style>
+:root {
+  color-scheme: light dark;
+  --site-primary: #244FCE;
+  --site-on-primary: #FFFFFF;
+  --site-secondary: #DDE7FF;
+  --site-on-secondary: #192B59;
+  --site-background: #F3F6FC;
+  --site-on-background: #172033;
+  --site-font-body: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  --site-font-heading: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  --site-heading-scale: 1;
+  --site-spacing-scale: 1;
+  --site-radius-scale: 1;
+  --site-decoration-opacity: 1;
+  --surface: light-dark(#FFFFFF, #171E2C);
+  --surface-muted: light-dark(#F7F9FD, #202A3B);
+  --text-muted: light-dark(#5C667A, #AAB5C8);
+  --border: light-dark(#DEE4EF, #354158);
+  --good: light-dark(#167449, #62D6A0);
+  --good-bg: light-dark(#E6F7EE, #15382D);
+  --bad: light-dark(#B42335, #FF9BA4);
+  --bad-bg: light-dark(#FFF0F1, #421F29);
+}
+* { box-sizing: border-box; }
+body {
+  margin: 0;
+  color: light-dark(var(--site-on-background), #EEF2FB);
+  background: light-dark(var(--site-background), #101622);
+  font-family: var(--site-font-body);
+  line-height: 1.55;
+}
+button, input, select, textarea { font: inherit; }
+button { cursor: pointer; }
+button:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-visible, label:has(input:focus-visible) { outline: 3px solid #84A6FF; outline-offset: 2px; }
+#app-root {
+  min-height: 100vh;
+  width: 100%;
+  background-color: var(--site-background);
+  background-color: light-dark(var(--site-background), #101622);
+  color: light-dark(var(--site-on-background), #EEF2FB);
+  border-radius: 0;
+}
+.container { width: min(1120px, calc(100% - 40px)); margin: 0 auto; }
+.topbar { background: var(--site-primary); color: var(--site-on-primary); }
+.nav-inner { display: flex; justify-content: space-between; align-items: center; gap: calc(16px * var(--site-spacing-scale)); min-height: 76px; }
+.brand { display: flex; align-items: center; gap: 12px; font-weight: 800; letter-spacing: .06em; }
+.brand-mark { width: 38px; height: 38px; border-radius: 12px; background: var(--site-on-primary); color: var(--site-primary); display: grid; place-items: center; font-weight: 900; letter-spacing: -.04em; }
+.brand small { display: block; font-size: .72rem; opacity: .78; letter-spacing: .13em; font-weight: 600; }
+.nav-note { color: var(--site-on-primary); opacity: .88; font-size: .88rem; }
+.nav-actions { display: flex; align-items: center; gap: 14px; }
+.theme-toggle { border: 1px solid rgba(255,255,255,.5); border-radius: 10px; padding: 8px 12px; background: transparent; color: #FFFFFF; font-weight: 750; white-space: nowrap; }
+.theme-toggle:hover { background: rgba(255,255,255,.12); }
+main { padding-bottom: 60px; }
+.hero { padding: calc(42px * var(--site-spacing-scale)) 0 calc(28px * var(--site-spacing-scale)); display: grid; grid-template-columns: minmax(0, 1.3fr) minmax(260px, .7fr); gap: 28px; align-items: center; }
+.eyebrow { text-transform: uppercase; letter-spacing: .14em; font-weight: 800; font-size: .72rem; color: var(--site-primary); }
+h1, h2, h3, p { margin-top: 0; }
+h1 { font-family: var(--site-font-heading); font-size: calc(2.55rem * var(--site-heading-scale)); line-height: 1.08; letter-spacing: -.045em; margin: 10px 0 16px; max-width: 750px; }
+h2 { font-size: calc(1.45rem * var(--site-heading-scale)); letter-spacing: -.025em; margin: 0 0 10px; }
+h3 { font-size: calc(1.08rem * var(--site-heading-scale)); margin: 0 0 8px; }
+.lede { color: var(--text-muted); font-size: 1.04rem; max-width: 660px; margin-bottom: 22px; }
+.stats { display: grid; grid-template-columns: repeat(3, minmax(0,1fr)); gap: 10px; }
+.stat { border: 1px solid var(--border); background: var(--surface); border-radius: calc(14px * var(--site-radius-scale)); padding: 14px; }
+.stat b { display: block; font-size: 1.35rem; letter-spacing: -.035em; }
+.stat span { color: var(--text-muted); font-size: .76rem; }
+.hero-card { border-radius: calc(22px * var(--site-radius-scale)); background: var(--site-secondary); color: var(--site-on-secondary); padding: calc(24px * var(--site-spacing-scale)); position: relative; overflow: hidden; }
+.hero-card::after { content: ""; position: absolute; width: 180px; height: 180px; border: 1px solid currentColor; opacity: calc(.12 * var(--site-decoration-opacity)); border-radius: 50%; right: -50px; bottom: -80px; box-shadow: 0 0 0 22px color-mix(in srgb, currentColor 7%, transparent), 0 0 0 45px color-mix(in srgb, currentColor 4%, transparent); pointer-events: none; }
+.hero-card p { margin: 0; color: color-mix(in srgb, var(--site-on-secondary) 78%, transparent); font-size: .92rem; }
+.hero-card .big-number { font-size: 3rem; font-weight: 850; letter-spacing: -.06em; line-height: 1; margin: 15px 0 10px; }
+.page-section { margin-top: calc(20px * var(--site-spacing-scale)); }
+.panel { border: 1px solid var(--border); border-radius: calc(18px * var(--site-radius-scale)); background: var(--surface); padding: calc(24px * var(--site-spacing-scale)); }
+.section-head { display: flex; justify-content: space-between; gap: 16px; align-items: start; margin-bottom: 20px; }
+.muted { color: var(--text-muted); }
+.small { font-size: .86rem; }
+.settings-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }
+.setting-block { padding: 16px; border: 1px solid var(--border); border-radius: calc(14px * var(--site-radius-scale)); background: var(--surface-muted); }
+.choice-row { display: flex; gap: 10px; margin-top: 10px; flex-wrap: wrap; }
+.mode-choice { flex: 1; min-width: 150px; border: 1px solid var(--border); border-radius: calc(12px * var(--site-radius-scale)); background: var(--surface); padding: 13px; display: flex; align-items: start; gap: 9px; cursor: pointer; }
+.mode-choice:has(input:checked) { border-color: var(--site-primary); box-shadow: 0 0 0 2px color-mix(in srgb, var(--site-primary) 12%, transparent); }
+.mode-choice input { accent-color: var(--site-primary); margin-top: 4px; }
+.mode-choice strong { display: block; font-size: .9rem; }
+.mode-choice span { display: block; color: var(--text-muted); font-size: .78rem; }
+.field-label { display: block; font-weight: 700; font-size: .86rem; margin-bottom: 8px; }
+select, .text-input { background: var(--surface); border: 1px solid var(--border); color: inherit; border-radius: 10px; padding: 10px 12px; width: 100%; }
+.toggle-list { display: grid; gap: 11px; margin-top: 4px; }
+.toggle { display: flex; align-items: center; gap: 10px; font-size: .9rem; cursor: pointer; }
+.toggle input { accent-color: var(--site-primary); width: 17px; height: 17px; }
+.btn { border: 1px solid transparent; border-radius: calc(11px * var(--site-radius-scale)); padding: 12px 17px; font-weight: 750; transition: transform .15s ease, background .15s ease; }
+.btn:hover { transform: translateY(-1px); }
+.btn-primary { background: var(--site-primary); color: var(--site-on-primary); }
+.btn-secondary { background: var(--site-secondary); color: var(--site-on-secondary); }
+.btn-outline { border-color: var(--border); color: inherit; background: var(--surface); }
+.btn-danger { background: var(--bad-bg); color: var(--bad); }
+.start-row { display: flex; align-items: center; justify-content: space-between; gap: 14px; margin-top: 20px; flex-wrap: wrap; }
+.start-note { color: var(--text-muted); font-size: .82rem; }
+.bank-grid { display: grid; grid-template-columns: repeat(5, minmax(0,1fr)); gap: 10px; }
+.bank-tile { border: 1px solid var(--border); background: var(--surface-muted); border-radius: calc(12px * var(--site-radius-scale)); padding: 12px; min-height: 88px; }
+.bank-tile b { display: block; font-size: .8rem; }
+.bank-tile span { display: block; color: var(--text-muted); font-size: .75rem; margin-top: 4px; }
+.footer { border-top: 1px solid var(--border); margin-top: 30px; padding: 20px 0; color: var(--text-muted); font-size: .8rem; }
+.hidden { display: none !important; }
+.quiz-top { padding: 26px 0 10px; display: flex; justify-content: space-between; gap: 15px; align-items: center; flex-wrap: wrap; }
+.quiz-shell { display: grid; grid-template-columns: minmax(0, 1fr) 250px; align-items: start; gap: 20px; }
+.question-panel { background: var(--surface); border: 1px solid var(--border); border-radius: calc(18px * var(--site-radius-scale)); padding: calc(26px * var(--site-spacing-scale)); min-width: 0; }
+.questions-list { display: grid; gap: 18px; }
+.question-item {
+  border: 1px solid var(--border);
+  border-radius: calc(16px * var(--site-radius-scale));
+  padding: 22px;
+  background: var(--surface);
+  scroll-margin-top: 18px;
+}
+.question-item h2 { font-size: 1.18rem; margin: 0; }
+.question-item .q-prompt { margin-bottom: 16px; }
+.question-item .check-answer-section { margin-top: 18px; }
+.question-item .q-actions { margin-top: 16px; padding-top: 14px; }
+.submit-row { border-top: 1px solid var(--border); padding-top: 20px; margin-top: 24px; }
+
+.progress-row { display: flex; align-items: center; justify-content: space-between; color: var(--text-muted); font-size: .82rem; gap: 12px; }
+.progress { height: 7px; background: var(--surface-muted); border-radius: 999px; margin: 12px 0 22px; overflow: hidden; }
+.progress-fill { height: 100%; background: var(--site-primary); width: 0; transition: width .2s ease; border-radius: 999px; }
+.q-title-row { display: flex; align-items: start; justify-content: space-between; gap: 12px; }
+.q-number { font-size: .78rem; color: var(--site-primary); text-transform: uppercase; font-weight: 800; letter-spacing: .12em; margin-bottom: 7px; }
+.type-pill { background: var(--surface-muted); border: 1px solid var(--border); padding: 5px 9px; border-radius: 999px; font-size: .73rem; color: var(--text-muted); flex-shrink: 0; }
+.q-prompt { font-size: 1.06rem; white-space: pre-wrap; margin: 10px 0 18px; }
+.code-block { overflow: auto; white-space: pre-wrap; word-break: normal; background: light-dark(#111B2B, #0D121C); color: #E5EDFF; padding: 16px; border-radius: 12px; font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-size: .82rem; line-height: 1.55; margin: 12px 0 18px; }
+.options { display: grid; gap: 9px; }
+.option { display: flex; gap: 11px; align-items: start; padding: 13px 14px; border: 1px solid var(--border); background: var(--surface); border-radius: calc(12px * var(--site-radius-scale)); cursor: pointer; transition: border-color .14s ease, background .14s ease; }
+.option:hover { border-color: color-mix(in srgb, var(--site-primary) 55%, var(--border)); }
+.option:has(input:checked) { border-color: var(--site-primary); background: color-mix(in srgb, var(--site-secondary) 36%, var(--surface)); }
+.option input { flex-shrink: 0; margin-top: 5px; accent-color: var(--site-primary); }
+.letter { display: inline-grid; place-items: center; min-width: 27px; height: 27px; border-radius: 8px; background: var(--surface-muted); border: 1px solid var(--border); font-size: .78rem; font-weight: 850; }
+.option-text { flex: 1; font-size: .92rem; overflow-wrap: anywhere; }
+.option-text code { font-size: .83rem; }
+.answer-input { width: 100%; min-height: 150px; resize: vertical; border: 1px solid var(--border); border-radius: 12px; background: var(--surface-muted); color: inherit; padding: 14px; font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-size: .86rem; line-height: 1.5; }
+.answer-input.short { min-height: 60px; }
+.hint-box { background: var(--surface-muted); border-left: 3px solid var(--site-primary); padding: 12px 14px; margin-top: 16px; border-radius: 0 10px 10px 0; color: var(--text-muted); font-size: .88rem; }
+.check-answer-section {
+  margin-top: 18px;
+  padding: 16px;
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  background: var(--surface-muted);
+}
+.check-answer-section h3 { margin: 0 0 6px; }
+.check-answer-section p { margin: 0 0 12px; color: var(--text-muted); font-size: .86rem; }
+.check-answer-feedback {
+  margin-top: 12px;
+  padding: 13px 14px;
+  border-radius: 10px;
+  font-size: .9rem;
+}
+.check-answer-feedback.correct { background: var(--good-bg); color: var(--good); }
+.check-answer-feedback.incorrect { background: var(--bad-bg); color: var(--bad); }
+.check-answer-feedback strong { display: block; margin-bottom: 5px; }
+.check-answer-feedback .explanation { margin-top: 7px; color: inherit; opacity: .92; }
+
+.q-actions { display: flex; justify-content: space-between; align-items: center; gap: 9px; margin-top: 24px; padding-top: 20px; border-top: 1px solid var(--border); flex-wrap: wrap; }
+.q-actions-left, .q-actions-right { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+.sidebar { position: sticky; top: 16px; }
+.side-panel { border: 1px solid var(--border); border-radius: calc(16px * var(--site-radius-scale)); padding: 17px; background: var(--surface); }
+.side-head { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-bottom: 12px; font-weight: 800; font-size: .9rem; }
+.question-map { display: grid; grid-template-columns: repeat(5, 1fr); gap: 7px; }
+.map-btn { border: 1px solid var(--border); border-radius: 9px; min-height: 38px; background: var(--surface-muted); color: inherit; font-weight: 750; font-size: .8rem; }
+.map-btn.active { background: var(--site-primary); border-color: var(--site-primary); color: var(--site-on-primary); }
+.map-btn.answered { border-color: var(--site-primary); box-shadow: inset 0 -3px 0 var(--site-primary); }
+.map-btn.flagged::after { content: "•"; color: #E6A23C; font-size: 1rem; margin-left: 2px; }
+.legend { margin-top: 14px; color: var(--text-muted); font-size: .76rem; display: grid; gap: 5px; }
+.side-divider { height: 1px; background: var(--border); margin: 16px 0; }
+.side-buttons { display: grid; gap: 8px; }
+.result-hero { background: var(--site-primary); color: var(--site-on-primary); padding: calc(30px * var(--site-spacing-scale)); border-radius: calc(22px * var(--site-radius-scale)); display: grid; grid-template-columns: 1fr auto; gap: 16px; align-items: center; }
+.result-hero h2 { font-size: calc(1.7rem * var(--site-heading-scale)); margin-bottom: 5px; }
+.score-number { font-size: 3.1rem; font-weight: 900; letter-spacing: -.06em; line-height: 1; }
+.score-sub { font-size: .82rem; opacity: .85; text-align: right; }
+.result-stats { display: grid; grid-template-columns: repeat(3, minmax(0,1fr)); gap: 12px; margin: 16px 0 24px; }
+.result-stat { background: var(--surface); border: 1px solid var(--border); border-radius: 13px; padding: 15px; }
+.result-stat b { display: block; font-size: 1.3rem; }
+.result-stat span { color: var(--text-muted); font-size: .78rem; }
+.review-list { display: grid; gap: 12px; }
+.review-item { background: var(--surface); border: 1px solid var(--border); border-radius: calc(14px * var(--site-radius-scale)); padding: 18px; }
+.review-item.correct { border-left: 4px solid var(--good); }
+.review-item.wrong { border-left: 4px solid var(--bad); }
+.review-item h3 { display: flex; justify-content: space-between; gap: 12px; align-items: start; flex-wrap: wrap; }
+.status { border-radius: 999px; padding: 4px 8px; font-size: .72rem; font-weight: 800; }
+.status.good { background: var(--good-bg); color: var(--good); }
+.status.bad { background: var(--bad-bg); color: var(--bad); }
+.status.neutral { background: var(--surface-muted); color: var(--text-muted); }
+.feedback-list { display: grid; gap: 7px; margin: 12px 0; }
+.feedback-line { border-radius: 9px; background: var(--surface-muted); padding: 9px 11px; font-size: .84rem; }
+.feedback-line.correct { border-left: 3px solid var(--good); }
+.feedback-line.wrong { border-left: 3px solid var(--bad); }
+.model-answer { margin-top: 12px; }
+.model-answer summary { color: var(--site-primary); cursor: pointer; font-weight: 800; font-size: .9rem; }
+.model-answer .code-block { margin-bottom: 0; }
+.results-actions { display: flex; gap: 10px; flex-wrap: wrap; margin: 22px 0 10px; }
+.result-note { color: var(--text-muted); font-size: .8rem; margin-top: 12px; }
+.pulse { animation: pulse .2s ease; }
+@keyframes pulse { from { opacity: .7; } to { opacity: 1; } }
+@media (max-width: 850px) {
+  .hero { grid-template-columns: 1fr; }
+  .hero-card { max-width: none; }
+  .quiz-shell { grid-template-columns: 1fr; }
+  .sidebar { position: static; order: -1; }
+  .question-map { grid-template-columns: repeat(8, minmax(0,1fr)); }
+  .settings-grid { grid-template-columns: 1fr; }
+  .bank-grid { grid-template-columns: repeat(3,minmax(0,1fr)); }
+}
+@media (max-width: 540px) {
+  .container { width: min(100% - 24px, 1120px); }
+  .nav-inner { min-height: 64px; }
+  .nav-note { display: none; }
+  .hero { padding-top: 28px; }
+  h1 { font-size: calc(2rem * var(--site-heading-scale)); }
+  .stats { gap: 7px; }
+  .stat { padding: 10px; }
+  .stat b { font-size: 1.08rem; }
+  .panel, .question-panel { padding: 17px; }
+  .question-item { padding: 16px; }
+  .bank-grid { grid-template-columns: repeat(2,minmax(0,1fr)); }
+  .question-map { grid-template-columns: repeat(5,minmax(0,1fr)); }
+  .q-actions { align-items: stretch; }
+  .q-actions-left, .q-actions-right { width: 100%; }
+  .q-actions .btn { flex: 1; }
+  .result-hero { grid-template-columns: 1fr; }
+  .score-sub { text-align: left; }
+  .result-stats { grid-template-columns: 1fr 1fr; }
+}
+@media (prefers-reduced-motion: reduce) { *, *::before, *::after { transition: none !important; animation: none !important; scroll-behavior: auto !important; } }
+
+.launch-panel {
+  width: min(680px, 100%);
+  margin: clamp(42px, 10vh, 100px) auto;
+  padding: clamp(28px, 6vw, 54px);
+  text-align: center;
+  border: 1px solid var(--border);
+  border-radius: 22px;
+  background: var(--surface);
+  box-shadow: 0 18px 50px rgba(15, 30, 55, .08);
+}
+.launch-panel h1 {
+  margin: 14px 0 12px;
+  font-size: clamp(2.2rem, 6vw, 3.4rem);
+}
+.launch-panel .lede {
+  margin: 0 auto 26px;
+  font-size: 1rem;
+}
+.launch-button {
+  min-width: 190px;
+  padding: 15px 24px;
+  font-size: 1rem;
+}
+.launch-panel .start-note {
+  display: block;
+  margin-top: 16px;
+}
+
+body { min-height: 100vh; }
+#app-root { min-height: 100vh; }
+main.container { padding-bottom: 0; }
+.entry-screen {
+  min-height: 100vh;
+  display: grid;
+  place-items: center;
+  text-align: center;
+}
+.entry-content {
+  display: grid;
+  justify-items: center;
+  gap: 16px;
+  width: 100%;
+  padding: 24px;
+}
+.entry-title {
+  font-size: clamp(1.25rem, 3vw, 1.8rem);
+  font-weight: 850;
+  letter-spacing: .12em;
+}
+.entry-count {
+  color: var(--text-muted);
+  font-size: .78rem;
+  font-weight: 750;
+  letter-spacing: .16em;
+}
+.launch-button {
+  min-width: min(300px, 86vw);
+  min-height: 82px;
+  margin-top: 12px;
+  padding: 18px 34px;
+  border-radius: 14px;
+  font-size: 1.25rem;
+  font-weight: 900;
+  letter-spacing: .12em;
+}
+</style>
+</head>
+<body>
+<div id="app-root">
+  <main class="container">
+    <section id="home-screen" class="entry-screen">
+      <div class="entry-content">
+        <div class="entry-title">COMPUTING SYSTEMS</div>
+        <div class="entry-count">35 QUESTIONS</div>
+        <button class="btn btn-primary launch-button" id="start-btn" type="button">START EXAM</button>
+      </div>
+    </section>
+<section id="quiz-screen" class="hidden">
+      <div class="quiz-top">
+        <div><div class="eyebrow">Active session</div><h2 style="margin:4px 0 0">Exam practice</h2></div>
+        <div class="q-actions-right"><button class="btn btn-outline" id="exit-btn">Exit to home</button></div>
+      </div>
+      <div class="quiz-shell">
+        <article class="question-panel">
+          <div class="progress-row"><span id="question-progress-label">35 questions</span><span id="answered-label">0 / 35 answered</span></div>
+          <div class="progress"><div class="progress-fill" id="progress-fill"></div></div>
+          <div id="questions-list" class="questions-list"></div>
+          <div class="start-row submit-row"><span class="start-note">You can answer, check, and review each question before submitting.</span><button class="btn btn-primary" id="submit-btn">Submit test</button></div>
+        </article>
+        <aside class="sidebar">
+          <div class="side-panel">
+            <div class="side-head"><span>Question navigator</span><span class="muted" id="map-total">35 total</span></div>
+            <div class="question-map" id="question-map"></div>
+            <div class="legend"><span>Filled underline = answered</span><span>Amber dot = marked for review</span></div>
+            <div class="side-divider"></div>
+            <div class="side-buttons"><button class="btn btn-outline" id="review-unanswered-btn">Go to unanswered</button><button class="btn btn-primary" id="submit-side-btn" type="button">Submit test</button></div>
+          </div>
+        </aside>
+      </div>
+    </section>
+
+    <section id="results-screen" class="hidden">
+      <div class="quiz-top"><div><div class="eyebrow">Attempt complete</div><h2 style="margin:4px 0 0">Results & answer review</h2></div><button class="btn btn-outline" id="results-home-btn">Home</button></div>
+      <div class="result-hero"><div><div class="eyebrow" style="color:var(--site-on-primary);opacity:.8">Your result</div><h2 id="result-title">Test submitted</h2><p id="result-summary" style="margin:0;opacity:.86">Review the answers below.</p></div><div><div class="score-number" id="score-number">0/35</div><div class="score-sub" id="score-percent">0% correct</div></div></div>
+      <div class="result-stats"><div class="result-stat"><b id="result-correct">0</b><span>Correct</span></div><div class="result-stat"><b id="result-wrong">0</b><span>Incorrect or incomplete</span></div><div class="result-stat"><b id="result-skipped">0</b><span>Unanswered</span></div></div>
+      <div class="panel"><div class="section-head"><div><h2>Review your answers</h2><p class="muted small" style="margin:0">Each question includes the expected answer and a short explanation.</p></div></div><div class="review-list" id="review-list"></div></div>
+      <div class="results-actions"><button class="btn btn-primary" id="retry-wrong-btn">Retry missed questions</button><button class="btn btn-secondary" id="retake-btn">Retake this test</button><button class="btn btn-outline" id="new-random-btn">New randomized test</button><button class="btn btn-outline" id="home-bottom-btn">Home</button></div>
+      <p class="result-note">Code questions are checked against key patterns to provide quick feedback. Compare the model answer too: equivalent correct C solutions can differ in formatting or implementation details.</p>
+    </section>
+    
+  </main>
+</div>
+
+<script>
+const QUESTIONS = [{"id":1,"title":"Half-adder carry-out","type":"single","topic":"Adders","prompt":"Write the Boolean expression for the carry-out output of a half adder with inputs A and B.","options":[{"v":"A","t":"AB"},{"v":"B","t":"A+B"},{"v":"C","t":"A⊕B"},{"v":"D","t":"A'B"}],"correct":["A"],"hint":"Carry is produced only when both input bits are 1.","explain":"A half adder's carry output is A AND B, so Cout = AB."},{"id":2,"title":"Binary fraction: 0.9","type":"single","topic":"Number systems","prompt":"Write the first six digits after the binary point for decimal 0.9.","options":[{"v":"A","t":"111001"},{"v":"B","t":"111010"},{"v":"C","t":"111000"},{"v":"D","t":"110011"}],"correct":["A"],"hint":"Multiply the fractional remainder by 2 repeatedly. Record each integer part.","explain":"The first six generated bits are 1, 1, 1, 0, 0, 1."},{"id":3,"title":"Maxterm from an input row","type":"single","topic":"Minterms & maxterms","prompt":"Write the maxterm of F(A,B,C) if A=1, B=1, C=0.","options":[{"v":"A","t":"(A' + B' + C)"},{"v":"B","t":"(A + B + C)"},{"v":"C","t":"(A' + B + C')"},{"v":"D","t":"(A + B' + C')"}],"correct":["A"],"hint":"For a maxterm, input 1 means a complemented variable; input 0 means an uncomplemented variable.","explain":"A maxterm is 0 at the specified row: A=1 becomes A', B=1 becomes B', and C=0 stays C."},{"id":4,"title":"Decimal 90 to binary","type":"single","topic":"Number systems","prompt":"What is the binary representation of decimal 90?","options":[{"v":"A","t":"1011010"},{"v":"B","t":"1010110"},{"v":"C","t":"1011011"},{"v":"D","t":"1101010"}],"correct":["A"],"hint":"Break 90 into powers of two: 64 + 16 + 8 + 2.","explain":"90 = 64 + 16 + 8 + 2, giving 1011010₂."},{"id":5,"title":"Complement law","type":"single","topic":"Boolean algebra","prompt":"Which expression is always equal to 1?","options":[{"v":"A","t":"A + A'"},{"v":"B","t":"A · A'"},{"v":"C","t":"A + 0"},{"v":"D","t":"A · 1"}],"correct":["A"],"hint":"A variable ORed with its complement is always true.","explain":"By the complement law, A + A' = 1 for either value of A."},{"id":6,"title":"Binary fraction: 0.675","type":"single","topic":"Number systems","prompt":"Write the first six digits after the binary point for decimal 0.675.","options":[{"v":"A","t":"101011"},{"v":"B","t":"101010"},{"v":"C","t":"101100"},{"v":"D","t":"110011"}],"correct":["A"],"hint":"Use repeated multiplication by 2 and record the integer part each time.","explain":"The first six generated bits are 1, 0, 1, 0, 1, 1."},{"id":7,"title":"Minterm from an input row","type":"single","topic":"Minterms & maxterms","prompt":"Write the minterm of F(A,B,C) if A=0, B=1, C=0.","options":[{"v":"A","t":"A'BC'"},{"v":"B","t":"ABC'"},{"v":"C","t":"A'B'C"},{"v":"D","t":"A'BC"}],"correct":["A"],"hint":"For a minterm, input 0 means a complemented variable; input 1 means uncomplemented.","explain":"A=0 becomes A', B=1 stays B, and C=0 becomes C'."},{"id":8,"title":"Identity law","type":"single","topic":"Boolean algebra","prompt":"Which expression is equivalent to A+0?","options":[{"v":"A","t":"A"},{"v":"B","t":"0"},{"v":"C","t":"1"},{"v":"D","t":"A'"}],"correct":["A"],"hint":"OR with 0 does not change a Boolean variable.","explain":"The identity law states A + 0 = A."},{"id":9,"title":"Absorption law","type":"single","topic":"Boolean algebra","prompt":"Which Boolean expression is equivalent to A+AB?","options":[{"v":"A","t":"A"},{"v":"B","t":"AB"},{"v":"C","t":"B"},{"v":"D","t":"A+B"}],"correct":["A"],"hint":"Factor out A: A + AB = A(1+B).","explain":"A(1+B)=A·1=A, so A+AB simplifies to A."},{"id":10,"title":"De Morgan simplification","type":"single","topic":"Boolean algebra","prompt":"Simplify (A+B)’ + (A+B’)’.","options":[{"v":"A","t":"A'"},{"v":"B","t":"A"},{"v":"C","t":"1"},{"v":"D","t":"0"}],"correct":["A"],"hint":"Apply De Morgan's law to each bracket, then factor out A'.","explain":"The terms become A'B' and A'B. Their OR is A'(B'+B)=A'."},{"id":11,"title":"Canonical POS maxterm indices","type":"single","topic":"Minterms & maxterms","prompt":"Which maxterms are included in the canonical POS form of F(A,B,C,D)=Σm(1,3,7,8,10,11,15)?","options":[{"v":"A","t":"0, 2, 4, 5, 6, 9, 12, 13, 14"},{"v":"B","t":"0, 2, 4, 5, 6, 8, 9, 12, 13, 14"},{"v":"C","t":"1, 3, 7, 8, 10, 11, 15"},{"v":"D","t":"0, 2, 4, 5, 6, 9, 12, 13, 15"}],"correct":["A"],"hint":"List all four-variable indices from 0 to 15, then remove the indices listed in Σm(...).","explain":"Canonical POS uses the indices where F=0, which are the indices absent from the given minterm list."},{"id":12,"title":"De Morgan with complemented input","type":"single","topic":"Boolean algebra","prompt":"Simplify (A+B’)’.","options":[{"v":"A","t":"A'B"},{"v":"B","t":"AB"},{"v":"C","t":"A'B'"},{"v":"D","t":"AB'"}],"correct":["A"],"hint":"Invert each term and switch OR to AND.","explain":"(A+B')' = A'·(B')' = A'B."},{"id":13,"title":"Decimal 61 to binary","type":"single","topic":"Number systems","prompt":"What is the binary representation of decimal 61?","options":[{"v":"A","t":"111101"},{"v":"B","t":"111011"},{"v":"C","t":"111100"},{"v":"D","t":"110101"}],"correct":["A"],"hint":"61 = 32 + 16 + 8 + 4 + 1.","explain":"The set powers are 32, 16, 8, 4, and 1, giving 111101₂."},{"id":14,"title":"Idempotent law","type":"single","topic":"Boolean algebra","prompt":"Which expression is equivalent to A+A?","options":[{"v":"A","t":"A"},{"v":"B","t":"0"},{"v":"C","t":"1"},{"v":"D","t":"A'"}],"correct":["A"],"hint":"Repeating the same Boolean variable does not change its value.","explain":"The idempotent law states A + A = A."},{"id":15,"title":"Binary fraction to decimal","type":"single","topic":"Number systems","prompt":"What is the decimal representation of binary 101011.00011?","options":[{"v":"A","t":"43.09375"},{"v":"B","t":"43.1875"},{"v":"C","t":"43.15625"},{"v":"D","t":"43.0625"}],"correct":["A"],"hint":"Convert 101011₂ to an integer, then add the place values of .00011₂.","explain":"101011₂=43 and .00011₂=1/16+1/32=0.09375. Total: 43.09375."},{"id":16,"title":"Half adder vs full adder","type":"single","topic":"Adders","prompt":"What is the main difference between a half adder and a full adder?","options":[{"v":"A","t":"A full adder accepts a carry-in input."},{"v":"B","t":"A half adder accepts a carry-in input."},{"v":"C","t":"A full adder has only two inputs."},{"v":"D","t":"A half adder produces two carry outputs."}],"correct":["A"],"hint":"Focus on the extra input that can come from the previous bit position.","explain":"A half adder has two data inputs. A full adder has three: A, B, and carry-in (Cin)."},{"id":17,"title":"Product simplification","type":"single","topic":"Boolean algebra","prompt":"Simplify (A+B)(A+B’).","options":[{"v":"A","t":"A"},{"v":"B","t":"AB"},{"v":"C","t":"A+B"},{"v":"D","t":"B"}],"correct":["A"],"hint":"Use (X+Y)(X+Z)=X+YZ, then evaluate B·B'.","explain":"(A+B)(A+B')=A+BB'=A+0=A."},{"id":18,"title":"Full-adder input count","type":"single","topic":"Adders","prompt":"A full adder has Sum=0 and Cout=1. How many inputs are 1?","options":[{"v":"A","t":"2"},{"v":"B","t":"0"},{"v":"C","t":"1"},{"v":"D","t":"3"}],"correct":["A"],"hint":"Sum=0 means an even number of 1s. Cout=1 requires at least two 1s.","explain":"With three inputs, the even counts are 0 or 2. Carry-out rules out 0, so exactly two inputs are 1."},{"id":19,"title":"Karnaugh-map groups","type":"single","topic":"Karnaugh maps","prompt":"Which groups appear in the Karnaugh map of F(A,B,C)=Σm(0,1,2,5,6,7)?","options":[{"v":"A","t":"A'B', A'C', B'C, BC', AC, AB"},{"v":"B","t":"A'B', A'C', B'C, BC', AB"},{"v":"C","t":"A'B', A'C', B'C, AC, AB"},{"v":"D","t":"A'B, A'C', B'C, BC', AC, AB"}],"correct":["A"],"hint":"Find every adjacent pair among the listed 1-minterms. A pair eliminates the variable that changes.","explain":"The six adjacent pairs simplify to A'B', A'C', B'C, BC', AC, and AB."},{"id":20,"title":"XOR of identical inputs","type":"single","topic":"Gates & circuits","prompt":"What is the output of A⊕A?","options":[{"v":"A","t":"0"},{"v":"B","t":"1"},{"v":"C","t":"A"},{"v":"D","t":"A'"}],"correct":["A"],"hint":"XOR is 1 only when its inputs differ.","explain":"The inputs are always identical, so they never differ. A⊕A=0."},{"id":21,"title":"Demultiplexer with zero data","type":"single","topic":"Multiplexers & demultiplexers","prompt":"A 1-to-4 demultiplexer has D=0 while its select lines change through all combinations. What is true about its outputs?","options":[{"v":"A","t":"All outputs remain 0."},{"v":"B","t":"The selected output becomes 1."},{"v":"C","t":"Exactly one output becomes 1."},{"v":"D","t":"The unselected outputs become undefined."}],"correct":["A"],"hint":"The select lines choose where D is routed. Consider the value being routed.","explain":"The selected output receives D=0, and every unselected output is also 0. All four outputs remain 0."},{"id":22,"title":"Full-adder I/O count","type":"single","topic":"Adders","prompt":"How many inputs and outputs does a full adder have?","options":[{"v":"A","t":"3 inputs, 2 outputs"},{"v":"B","t":"2 inputs, 2 outputs"},{"v":"C","t":"3 inputs, 1 output"},{"v":"D","t":"4 inputs, 2 outputs"}],"correct":["A"],"hint":"Name the three input bits and the two output bits.","explain":"Inputs are A, B, and Cin. Outputs are Sum and Cout."},{"id":23,"title":"Minterms of a Boolean function","type":"single","topic":"Minterms & maxterms","prompt":"Which minterms are included in F(A,B,C)=A+B’C?","options":[{"v":"A","t":"1, 4, 5, 6, 7"},{"v":"B","t":"0, 1, 4, 5, 6"},{"v":"C","t":"1, 3, 4, 5, 7"},{"v":"D","t":"0, 4, 5, 6, 7"}],"correct":["A"],"hint":"When A=1, the function is 1 for every B,C combination. Then evaluate B'C when A=0.","explain":"A=1 gives minterms 4,5,6,7. B'C adds minterm 1, so the union is 1,4,5,6,7."},{"id":24,"title":"Hexadecimal ABCE to binary","type":"single","topic":"Number systems","prompt":"What is the binary representation of hexadecimal ABCE?","options":[{"v":"A","t":"1010101111001110"},{"v":"B","t":"1010101111001101"},{"v":"C","t":"1010101111001111"},{"v":"D","t":"1011101111001110"}],"correct":["A"],"hint":"Convert each hexadecimal digit to exactly four binary bits.","explain":"A=1010, B=1011, C=1100, and E=1110. Concatenate the four groups."},{"id":25,"title":"Boolean expression reduction","type":"single","topic":"Boolean algebra","prompt":"Simplify AB+A’B+AB’.","options":[{"v":"A","t":"A+B"},{"v":"B","t":"AB"},{"v":"C","t":"A'+B"},{"v":"D","t":"A+B'"}],"correct":["A"],"hint":"Combine AB+A'B first, then simplify B+AB'.","explain":"AB+A'B=B(A+A')=B. Then B+AB'=A+B."},{"id":26,"title":"Half-adder inputs from outputs","type":"single","topic":"Adders","prompt":"A half adder has Sum=1 and Cout=0. Which input pairs are possible?","options":[{"v":"A","t":"A=0, B=1 or A=1, B=0"},{"v":"B","t":"A=0, B=0 or A=1, B=1"},{"v":"C","t":"Only A=0, B=1"},{"v":"D","t":"Only A=1, B=0"}],"correct":["A"],"hint":"Sum=1 means the inputs differ. Check both possible unequal pairs against Cout=AB.","explain":"Sum=A⊕B is 1 for 01 or 10. Both pairs also give Cout=AB=0."},{"id":27,"title":"4-to-1 multiplexer function","type":"single","topic":"Multiplexers & demultiplexers","prompt":"A 4-to-1 MUX has I0=0, I1=1, I2=1, I3=0, with S1=A and S0=B. What output function does it implement?","options":[{"v":"A","t":"A'B+AB' or A⊕B"},{"v":"B","t":"AB"},{"v":"C","t":"A+B"},{"v":"D","t":"A'B'+AB"}],"correct":["A"],"hint":"The MUX selects I0,I1,I2,I3 for select values AB=00,01,10,11 respectively.","explain":"The output is 1 for 01 and 10, and 0 for 00 and 11. This is A'B+AB'=A⊕B."},{"id":28,"title":"AND-gate output","type":"single","topic":"Gates & circuits","prompt":"What is the output of an AND gate when A=1 and B=0?","options":[{"v":"A","t":"0"},{"v":"B","t":"1"},{"v":"C","t":"A"},{"v":"D","t":"B"}],"correct":["A"],"hint":"An AND gate outputs 1 only when both inputs are 1.","explain":"Because B=0, both inputs are not 1. The AND output is 0."},{"id":29,"title":"OR-gate output","type":"single","topic":"Gates & circuits","prompt":"What is the output of an OR gate when A=1 and B=0?","options":[{"v":"A","t":"1"},{"v":"B","t":"0"},{"v":"C","t":"A'"},{"v":"D","t":"B"}],"correct":["A"],"hint":"An OR gate outputs 1 when at least one input is 1.","explain":"A=1 is sufficient for the OR output to be 1."},{"id":30,"title":"Binary to hexadecimal","type":"single","topic":"Number systems","prompt":"What is the hexadecimal representation of binary 1001010100101?","options":[{"v":"A","t":"12A5"},{"v":"B","t":"12A4"},{"v":"C","t":"125A"},{"v":"D","t":"1A25"}],"correct":["A"],"hint":"Group bits into sets of four from the right, padding the left with zeroes if needed.","explain":"Pad to 0001 0010 1010 0101. The groups map to 1, 2, A, and 5, giving 12A5₁₆."},{"id":31,"title":"Binary fraction to decimal","type":"single","topic":"Number systems","prompt":"What is the decimal representation of binary 110111.01011?","options":[{"v":"A","t":"55.34375"},{"v":"B","t":"55.3125"},{"v":"C","t":"55.375"},{"v":"D","t":"55.15625"}],"correct":["A"],"hint":"The integer part is 55. The fractional part .01011 is 1/4 + 1/16 + 1/32.","explain":"110111₂=55 and .01011₂=0.25+0.0625+0.03125=0.34375. Total: 55.34375."},{"id":32,"title":"Binary to base 5","type":"single","topic":"Number systems","prompt":"What is the base-5 representation of binary 1100101010?","options":[{"v":"A","t":"11220"},{"v":"B","t":"11120"},{"v":"C","t":"11210"},{"v":"D","t":"12120"}],"correct":["A"],"hint":"Convert the binary number to decimal, then repeatedly divide by 5 and read remainders upward.","explain":"1100101010₂=810₁₀. Converting 810 to base 5 gives 11220₅."},{"id":33,"title":"XOR-based Boolean simplification","type":"single","topic":"Boolean algebra","prompt":"Simplify (A⊕B)(A⊕C)’ + A’BC.","options":[{"v":"A","t":"A'B+AB'C"},{"v":"B","t":"A'B+ABC"},{"v":"C","t":"A'B'+AB'C"},{"v":"D","t":"A'B+AC"}],"correct":["A"],"hint":"Evaluate the expression separately for A=0 and A=1, then combine the cases.","explain":"For A=0, the expression reduces to B. For A=1, it reduces to B'C. Combining the cases gives A'B+AB'C."},{"id":34,"title":"Full-adder outputs","type":"single","topic":"Adders","prompt":"A full adder has A=0, B=0, Cin=1. What are its outputs?","options":[{"v":"A","t":"Sum=1, Cout=0"},{"v":"B","t":"Sum=0, Cout=1"},{"v":"C","t":"Sum=1, Cout=1"},{"v":"D","t":"Sum=0, Cout=0"}],"correct":["A"],"hint":"There is exactly one input bit set. Sum follows parity; carry needs at least two input bits set.","explain":"0+0+1=1, so Sum=1 and Cout=0."},{"id":35,"title":"Complement law result","type":"single","topic":"Boolean algebra","prompt":"Which expression is equivalent to A+A’?","options":[{"v":"A","t":"1"},{"v":"B","t":"0"},{"v":"C","t":"A"},{"v":"D","t":"A'"}],"correct":["A"],"hint":"A variable ORed with its complement is always true.","explain":"A+A'=1 by the complement law."}];
+const $ = id => document.getElementById(id);
+const screens = {home:$('home-screen'),quiz:$('quiz-screen'),results:$('results-screen')};
+let state = {questions:[],index:0,answers:{},flagged:new Set(),hints:new Set(),checkedAnswers:new Set(),submitted:false,sourceIds:[],lastResults:null};
+function safeLoadStats(){try{return JSON.parse(localStorage.getItem('computingSystemsExamStats')||'{"attempts":0,"best":null,"last":null}');}catch(e){return {attempts:0,best:null,last:null};}}
+function saveStats(s){try{localStorage.setItem('computingSystemsExamStats',JSON.stringify(s));}catch(e){}}
+function displayStats(){}
+function showScreen(name){Object.values(screens).forEach(el=>el.classList.add('hidden'));screens[name].classList.remove('hidden');window.scrollTo({top:0,behavior:'smooth'});}
+function shuffle(arr){const a=[...arr];for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;}
+function selectedLength(){return 35;}
+function startQuiz(ids=null){
+  let chosen=ids?ids.map(id=>QUESTIONS.find(q=>q.id===id)).filter(Boolean):[...QUESTIONS];
+  const targetPositions=shuffle(Array.from({length:chosen.length},(_,i)=>i%4));
+  state={
+    questions:chosen.map((q,qi)=>{
+      const right=q.options.find(o=>q.correct.includes(o.v));
+      const distractors=shuffle(q.options.filter(o=>!q.correct.includes(o.v)));
+      const answerIndex=targetPositions[qi];
+      let di=0;
+      const letters=['A','B','C','D'];
+      const options=letters.map((v,i)=>({v,t:i===answerIndex?right.t:distractors[di++].t}));
+      return {...q,options,correct:[letters[answerIndex]]};
+    }),
+    index:0,answers:{},flagged:new Set(),hints:new Set(),checkedAnswers:new Set(),
+    submitted:false,sourceIds:chosen.map(q=>q.id),lastResults:null
+  };
+  $('map-total').textContent=chosen.length+' total';
+  showScreen('quiz');
+  renderQuestion();
+}
+function isAnswered(q){return typeof state.answers[q.id]==='string'&&state.answers[q.id].trim().length>0;}
+function answeredCount(){return state.questions.filter(isAnswered).length;}
+function updateProgress(){
+  const total=state.questions.length;
+  const answered=answeredCount();
+  $('question-progress-label').textContent=total+' questions';
+  $('answered-label').textContent=answered+' / '+total+' answered';
+  $('progress-fill').style.width=(total?answered/total*100:0)+'%';
+}
+function renderMap(){
+  const map=$('question-map');
+  map.innerHTML='';
+  state.questions.forEach((q,i)=>{
+    const b=document.createElement('button');
+    b.type='button';
+    b.className='map-btn'+(i===state.index?' active':'')+(isAnswered(q)?' answered':'')+(state.flagged.has(q.id)?' flagged':'');
+    b.textContent=String(i+1);
+    b.title='Question '+(i+1)+(isAnswered(q)?' · answered':' · unanswered')+(state.flagged.has(q.id)?' · marked for review':'');
+    b.addEventListener('click',()=>{
+      state.index=i;
+      renderMap();
+      const card=document.getElementById('question-card-'+q.id);
+      if(card)card.scrollIntoView({behavior:'smooth',block:'start'});
+    });
+    map.appendChild(b);
+  });
+}
+function renderCardFeedback(q,card){
+  const checkButton=card.querySelector('.check-answer-btn');
+  const feedback=card.querySelector('.check-answer-feedback');
+  checkButton.disabled=!isAnswered(q);
+  feedback.replaceChildren();
+  feedback.className='check-answer-feedback hidden';
+  if(!state.checkedAnswers.has(q.id))return;
+  const result=gradeQuestion(q);
+  const correctOption=q.options.find(o=>q.correct.includes(o.v));
+  const chosenOption=q.options.find(o=>o.v===result.answer);
+  feedback.className='check-answer-feedback '+(result.correct?'correct':'incorrect');
+  const heading=document.createElement('strong');
+  heading.textContent=result.correct?'Correct!':'Not quite.';
+  const answerLine=document.createElement('div');
+  answerLine.textContent=result.correct
+    ? 'Your answer: '+chosenOption.v+'. '+chosenOption.t
+    : 'Correct answer: '+correctOption.v+'. '+correctOption.t;
+  const explanation=document.createElement('div');
+  explanation.className='explanation';
+  explanation.textContent=q.explain;
+  feedback.append(heading,answerLine,explanation);
+}
+function buildQuestionCard(q,i){
+  const card=document.createElement('article');
+  card.className='question-item';
+  card.id='question-card-'+q.id;
+  card.dataset.questionId=String(q.id);
+
+  const header=document.createElement('div');
+  header.className='q-title-row';
+  const titleBlock=document.createElement('div');
+  const number=document.createElement('div');
+  number.className='q-number';
+  number.textContent='Question '+(i+1);
+  const title=document.createElement('h2');
+  title.textContent=q.title;
+  titleBlock.append(number,title);
+  const type=document.createElement('span');
+  type.className='type-pill';
+  type.textContent='Select one';
+  header.append(titleBlock,type);
+  card.appendChild(header);
+
+  const prompt=document.createElement('p');
+  prompt.className='q-prompt';
+  prompt.textContent=q.prompt;
+  card.appendChild(prompt);
+
+  if(q.code){
+    const code=document.createElement('pre');
+    code.className='code-block';
+    code.textContent=q.code;
+    card.appendChild(code);
+  }
+
+  const options=document.createElement('div');
+  options.className='options';
+  q.options.forEach(o=>{
+    const label=document.createElement('label');
+    label.className='option';
+    const input=document.createElement('input');
+    input.type='radio';
+    input.name='answer-'+q.id;
+    input.value=o.v;
+    input.checked=state.answers[q.id]===o.v;
+    input.addEventListener('change',()=>{
+      state.answers[q.id]=o.v;
+      state.checkedAnswers.delete(q.id);
+      state.index=i;
+      renderCardFeedback(q,card);
+      updateProgress();
+      renderMap();
+    });
+    const letter=document.createElement('span');
+    letter.className='letter';
+    letter.textContent=o.v;
+    const optionText=document.createElement('span');
+    optionText.className='option-text';
+    optionText.textContent=o.t;
+    label.append(input,letter,optionText);
+    options.appendChild(label);
+  });
+  card.appendChild(options);
+
+  const checkSection=document.createElement('section');
+  checkSection.className='check-answer-section';
+  const checkTitle=document.createElement('h3');
+  checkTitle.textContent='Check the answer';
+  const checkDescription=document.createElement('p');
+  checkDescription.textContent='Choose an option, then check it to see the correct answer and explanation.';
+  const checkButton=document.createElement('button');
+  checkButton.type='button';
+  checkButton.className='btn btn-secondary check-answer-btn';
+  checkButton.textContent='Check answer';
+  const feedback=document.createElement('div');
+  feedback.className='check-answer-feedback hidden';
+  feedback.setAttribute('aria-live','polite');
+  checkButton.addEventListener('click',()=>{
+    if(!isAnswered(q))return;
+    state.checkedAnswers.add(q.id);
+    renderCardFeedback(q,card);
+  });
+  checkSection.append(checkTitle,checkDescription,checkButton,feedback);
+  card.appendChild(checkSection);
+
+  const hint=document.createElement('div');
+  hint.className='hint-box'+(state.hints.has(q.id)?'':' hidden');
+  hint.textContent=q.hint;
+
+  const actions=document.createElement('div');
+  actions.className='q-actions';
+  const left=document.createElement('div');
+  left.className='q-actions-left';
+  const clearButton=document.createElement('button');
+  clearButton.type='button';
+  clearButton.className='btn btn-outline';
+  clearButton.textContent='Clear answer';
+  clearButton.disabled=!isAnswered(q);
+  clearButton.addEventListener('click',()=>{
+    delete state.answers[q.id];
+    state.checkedAnswers.delete(q.id);
+    card.querySelectorAll('input[type="radio"]').forEach(input=>input.checked=false);
+    clearButton.disabled=true;
+    renderCardFeedback(q,card);
+    updateProgress();
+    renderMap();
+  });
+  left.appendChild(clearButton);
+
+  const right=document.createElement('div');
+  right.className='q-actions-right';
+  const hintButton=document.createElement('button');
+  hintButton.type='button';
+  hintButton.className='btn btn-secondary';
+  hintButton.textContent=state.hints.has(q.id)?'Hide hint':'Show hint';
+  hintButton.addEventListener('click',()=>{
+    if(state.hints.has(q.id)){
+      state.hints.delete(q.id);
+      hint.classList.add('hidden');
+      hintButton.textContent='Show hint';
+    }else{
+      state.hints.add(q.id);
+      hint.classList.remove('hidden');
+      hintButton.textContent='Hide hint';
+    }
+  });
+  const flagButton=document.createElement('button');
+  flagButton.type='button';
+  flagButton.className='btn btn-outline';
+  flagButton.textContent=state.flagged.has(q.id)?'⚑ Remove review mark':'⚑ Mark for review';
+  flagButton.addEventListener('click',()=>{
+    if(state.flagged.has(q.id))state.flagged.delete(q.id);
+    else state.flagged.add(q.id);
+    flagButton.textContent=state.flagged.has(q.id)?'⚑ Remove review mark':'⚑ Mark for review';
+    state.index=i;
+    renderMap();
+  });
+  right.append(hintButton,flagButton);
+  actions.append(left,right);
+  card.append(hint,actions);
+  return card;
+}
+function renderQuestion(){
+  const root=$('questions-list');
+  root.replaceChildren();
+  state.questions.forEach((q,i)=>root.appendChild(buildQuestionCard(q,i)));
+  updateProgress();
+  renderMap();
+}
+$('start-btn').addEventListener('click',()=>startQuiz());
+$('review-unanswered-btn').addEventListener('click',()=>{
+  const i=state.questions.findIndex(q=>!isAnswered(q));
+  if(i>=0){
+    state.index=i;
+    renderMap();
+    const card=document.getElementById('question-card-'+state.questions[i].id);
+    if(card)card.scrollIntoView({behavior:'smooth',block:'start'});
+  }else{
+    alert('You have answered every question in this session. You can submit the test now.');
+  }
+});
+function askSubmit(){
+  const unanswered=state.questions.filter(q=>!isAnswered(q)).length;
+  const msg=unanswered
+    ? 'You have '+unanswered+' unanswered question(s). Submit anyway?'
+    : 'Submit and mark this test?';
+  if(confirm(msg))submitQuiz();
+}
+$('submit-btn').addEventListener('click',askSubmit);
+$('submit-side-btn').addEventListener('click',askSubmit);
+$('exit-btn').addEventListener('click',()=>{
+  if(confirm('Exit this attempt? Your answers in the current attempt will be discarded.')){
+    showScreen('home');
+    displayStats();
+  }
+});
+
+function gradeQuestion(q){const answer=state.answers[q.id]||'';const expected=q.correct;const correct=expected.includes(answer);return {correct,answer,expected};}
+function element(tag,className,content){const el=document.createElement(tag);if(className)el.className=className;if(content!==undefined)el.textContent=content;return el;}
+function renderReview(results){const root=$('review-list');root.innerHTML='';results.forEach((r,i)=>{const q=r.q,g=r.grade;const card=element('article','review-item '+(g.correct?'correct':'wrong'));const heading=element('h3','',(i+1)+'. '+q.title);const status=element('span','status '+(g.correct?'good':'bad'),g.correct?'Correct':(!g.answer?'Unanswered':'Incorrect'));heading.appendChild(status);card.appendChild(heading);card.appendChild(element('p','muted small',q.prompt));const chosen=q.options.find(o=>o.v===g.answer);const expected=q.options.find(o=>g.expected.includes(o.v));card.appendChild(element('p','', 'Your answer: '+(chosen?chosen.v+'. '+chosen.t:'(blank)')));card.appendChild(element('p','', 'Correct answer: '+(expected?expected.v+'. '+expected.t:q.correct.join(', '))));card.appendChild(element('p','',q.explain));const feedback=element('div','feedback-list');q.options.forEach(o=>{const line=element('div','feedback-line '+(g.expected.includes(o.v)?'correct':(o.v===g.answer?'wrong':'')),(g.expected.includes(o.v)?'Expected · ':'')+o.v+'. '+o.t);feedback.appendChild(line);});card.appendChild(feedback);root.appendChild(card);});}
+function submitQuiz(){state.submitted=true;const results=state.questions.map(q=>({q,grade:gradeQuestion(q)}));const correct=results.filter(r=>r.grade.correct).length;const skipped=results.filter(r=>!r.grade.answer).length;const max=results.length;const percent=Math.round(correct/max*100);const stats=safeLoadStats();stats.attempts=(stats.attempts||0)+1;stats.best=stats.best==null?percent:Math.max(stats.best,percent);stats.last=percent;saveStats(stats);displayStats();state.lastResults=results;$('score-number').textContent=correct+'/'+max;$('score-percent').textContent=percent+'% correct';$('result-correct').textContent=correct;$('result-wrong').textContent=max-correct-skipped;$('result-skipped').textContent=skipped;$('result-title').textContent=percent>=90?'Strong result':percent>=70?'Good progress':'Practice round complete';$('result-summary').textContent=percent>=90?'Excellent recall. Review any missed details before the exam.':percent>=70?'Repeat the missed questions and strengthen the rules you hesitated on.':'Use the answer review to learn the patterns, then retake the test.';renderReview(results);showScreen('results');}
+function retryIds(ids){if(!ids.length){alert('No missed questions in that session.');return;}startQuiz(ids,{shuffleQuestions:false,shuffleOptions:false});}
+$('retry-wrong-btn').addEventListener('click',()=>retryIds((state.lastResults||[]).filter(r=>!r.grade.correct).map(r=>r.q.id)));
+$('retake-btn').addEventListener('click',()=>startQuiz(state.sourceIds,{shuffleQuestions:false,shuffleOptions:false}));
+$('new-random-btn').addEventListener('click',()=>startQuiz(null));
+const goHome=()=>{showScreen('home');displayStats();};$('results-home-btn').addEventListener('click',goHome);$('home-bottom-btn').addEventListener('click',goHome);
+
+function applyTheme(mode,persist=true){const theme=mode==='dark'?'dark':'light';document.documentElement.style.colorScheme=theme;document.documentElement.dataset.theme=theme;const button=$('theme-toggle');button.textContent=theme==='dark'?'☀ Light mode':'☾ Night mode';button.setAttribute('aria-pressed',String(theme==='dark'));if(persist){try{localStorage.setItem('computingSystemsExamTheme',theme);}catch(e){}}}
+function loadTheme(){let saved=null;try{saved=localStorage.getItem('computingSystemsExamTheme');}catch(e){}if(saved!=='dark'&&saved!=='light')saved=window.matchMedia&&window.matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light';applyTheme(saved,false);}
+
+$('new-random-btn').textContent='New attempt';
+</script>
+</body>
+</html>
