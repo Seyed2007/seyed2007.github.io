@@ -331,7 +331,7 @@ function displayStats(){}
 function showScreen(name){Object.values(screens).forEach(el=>el.classList.add('hidden'));screens[name].classList.remove('hidden');window.scrollTo({top:0,behavior:'smooth'});}
 function shuffle(arr){const a=[...arr];for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;}
 function selectedLength(){return 35;}
-function startQuiz(ids=null,opts={}){let chosen=ids?ids.map(id=>QUESTIONS.find(q=>q.id===id)).filter(Boolean):[...QUESTIONS];if(opts.shuffleQuestions&&chosen.length>1)chosen=shuffle(chosen);const targetPositions=shuffle(Array.from({length:chosen.length},(_,i)=>i%4));state={questions:chosen.map((q,qi)=>{const right=q.options.find(o=>q.correct.includes(o.v));const distractors=shuffle(q.options.filter(o=>!q.correct.includes(o.v)));const answerIndex=targetPositions[qi];let di=0;const letters=['A','B','C','D'];const options=letters.map((v,i)=>({v,t:i===answerIndex?right.t:distractors[di++].t}));return {...q,options,correct:[letters[answerIndex]]};}),index:0,answers:{},flagged:new Set(),hints:new Set(),submitted:false,sourceIds:chosen.map(q=>q.id),lastResults:null};$('map-total').textContent=chosen.length+' total';showScreen('quiz');renderQuestion();}
+function startQuiz(ids=null){let chosen=ids?ids.map(id=>QUESTIONS.find(q=>q.id===id)).filter(Boolean):[...QUESTIONS];const targetPositions=shuffle(Array.from({length:chosen.length},(_,i)=>i%4));state={questions:chosen.map((q,qi)=>{const right=q.options.find(o=>q.correct.includes(o.v));const distractors=shuffle(q.options.filter(o=>!q.correct.includes(o.v)));const answerIndex=targetPositions[qi];let di=0;const letters=['A','B','C','D'];const options=letters.map((v,i)=>({v,t:i===answerIndex?right.t:distractors[di++].t}));return {...q,options,correct:[letters[answerIndex]]};}),index:0,answers:{},flagged:new Set(),hints:new Set(),submitted:false,sourceIds:chosen.map(q=>q.id),lastResults:null};$('map-total').textContent=chosen.length+' total';showScreen('quiz');renderQuestion();}
 function currentQuestion(){return state.questions[state.index];}
 function isAnswered(q){return typeof state.answers[q.id]==='string'&&state.answers[q.id].trim().length>0;}
 function answeredCount(){return state.questions.filter(isAnswered).length;}
@@ -353,13 +353,13 @@ function submitQuiz(){state.submitted=true;const results=state.questions.map(q=>
 function retryIds(ids){if(!ids.length){alert('No missed questions in that session.');return;}startQuiz(ids,{shuffleQuestions:false,shuffleOptions:false});}
 $('retry-wrong-btn').addEventListener('click',()=>retryIds((state.lastResults||[]).filter(r=>!r.grade.correct).map(r=>r.q.id)));
 $('retake-btn').addEventListener('click',()=>startQuiz(state.sourceIds,{shuffleQuestions:false,shuffleOptions:false}));
-$('new-random-btn').addEventListener('click',()=>startQuiz(null,{shuffleQuestions:true}));
+$('new-random-btn').addEventListener('click',()=>startQuiz(null));
 const goHome=()=>{showScreen('home');displayStats();};$('results-home-btn').addEventListener('click',goHome);$('home-bottom-btn').addEventListener('click',goHome);
 
 function applyTheme(mode,persist=true){const theme=mode==='dark'?'dark':'light';document.documentElement.style.colorScheme=theme;document.documentElement.dataset.theme=theme;const button=$('theme-toggle');button.textContent=theme==='dark'?'☀ Light mode':'☾ Night mode';button.setAttribute('aria-pressed',String(theme==='dark'));if(persist){try{localStorage.setItem('computingSystemsExamTheme',theme);}catch(e){}}}
 function loadTheme(){let saved=null;try{saved=localStorage.getItem('computingSystemsExamTheme');}catch(e){}if(saved!=='dark'&&saved!=='light')saved=window.matchMedia&&window.matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light';applyTheme(saved,false);}
 
-$('new-random-btn').textContent='New randomized exam';
+$('new-random-btn').textContent='New attempt';
 </script>
 </body>
 </html>
