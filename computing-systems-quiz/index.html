@@ -396,7 +396,7 @@ $('check-answer-btn').addEventListener('click',()=>{
 $('start-btn').addEventListener('click',()=>startQuiz());
 $('prev-btn').addEventListener('click',()=>{if(state.index>0){state.index--;renderQuestion();}});
 $('next-btn').addEventListener('click',()=>{if(state.index<state.questions.length-1){state.index++;renderQuestion();}else submitQuiz();});
-$('clear-answer-btn').addEventListener('click',()=>{delete state.answers[currentQuestion().id];renderQuestion();});
+$('clear-answer-btn').addEventListener('click',()=>{const id=currentQuestion().id;delete state.answers[id];state.checkedAnswers.delete(id);renderQuestion();});
 $('hint-btn').addEventListener('click',()=>{const id=currentQuestion().id;if(state.hints.has(id))state.hints.delete(id);else state.hints.add(id);renderQuestion();});
 $('flag-btn').addEventListener('click',()=>{const id=currentQuestion().id;if(state.flagged.has(id))state.flagged.delete(id);else state.flagged.add(id);renderQuestion();});
 $('review-unanswered-btn').addEventListener('click',()=>{const i=state.questions.findIndex(q=>!isAnswered(q));if(i>=0){state.index=i;renderQuestion();}else{alert('You have answered every question in this session. You can submit the test now.');}});
