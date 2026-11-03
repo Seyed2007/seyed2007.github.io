@@ -109,6 +109,20 @@ select, .text-input { background: var(--surface); border: 1px solid var(--border
 .quiz-top { padding: 26px 0 10px; display: flex; justify-content: space-between; gap: 15px; align-items: center; flex-wrap: wrap; }
 .quiz-shell { display: grid; grid-template-columns: minmax(0, 1fr) 250px; align-items: start; gap: 20px; }
 .question-panel { background: var(--surface); border: 1px solid var(--border); border-radius: calc(18px * var(--site-radius-scale)); padding: calc(26px * var(--site-spacing-scale)); min-width: 0; }
+.questions-list { display: grid; gap: 18px; }
+.question-item {
+  border: 1px solid var(--border);
+  border-radius: calc(16px * var(--site-radius-scale));
+  padding: 22px;
+  background: var(--surface);
+  scroll-margin-top: 18px;
+}
+.question-item h2 { font-size: 1.18rem; margin: 0; }
+.question-item .q-prompt { margin-bottom: 16px; }
+.question-item .check-answer-section { margin-top: 18px; }
+.question-item .q-actions { margin-top: 16px; padding-top: 14px; }
+.submit-row { border-top: 1px solid var(--border); padding-top: 20px; margin-top: 24px; }
+
 .progress-row { display: flex; align-items: center; justify-content: space-between; color: var(--text-muted); font-size: .82rem; gap: 12px; }
 .progress { height: 7px; background: var(--surface-muted); border-radius: 999px; margin: 12px 0 22px; overflow: hidden; }
 .progress-fill { height: 100%; background: var(--site-primary); width: 0; transition: width .2s ease; border-radius: 999px; }
@@ -208,6 +222,7 @@ select, .text-input { background: var(--surface); border: 1px solid var(--border
   .stat { padding: 10px; }
   .stat b { font-size: 1.08rem; }
   .panel, .question-panel { padding: 17px; }
+  .question-item { padding: 16px; }
   .bank-grid { grid-template-columns: repeat(2,minmax(0,1fr)); }
   .question-map { grid-template-columns: repeat(5,minmax(0,1fr)); }
   .q-actions { align-items: stretch; }
@@ -303,24 +318,10 @@ main.container { padding-bottom: 0; }
       </div>
       <div class="quiz-shell">
         <article class="question-panel">
-          <div class="progress-row"><span id="question-progress-label">Question 1 of 35</span><span id="answered-label">0 answered</span></div>
+          <div class="progress-row"><span id="question-progress-label">35 questions</span><span id="answered-label">0 / 35 answered</span></div>
           <div class="progress"><div class="progress-fill" id="progress-fill"></div></div>
-          <div class="q-title-row"><div><div class="q-number" id="question-number">Question 1</div><h2 id="question-title">Title</h2></div><span class="type-pill" id="question-type">Single choice</span></div>
-          <p class="q-prompt" id="question-prompt"></p>
-          <pre class="code-block hidden" id="question-code"></pre>
-          <div id="answer-area"></div>
-          <section class="check-answer-section" aria-labelledby="check-answer-title">
-            <h3 id="check-answer-title">Check the answer</h3>
-            <p>Choose an option, then check it to see the correct answer and explanation.</p>
-            <button class="btn btn-secondary" id="check-answer-btn" type="button" disabled>Check answer</button>
-            <div id="check-answer-feedback" class="hidden" aria-live="polite"></div>
-          </section>
-          <div id="hint-area" class="hidden"></div>
-          <div class="q-actions">
-            <div class="q-actions-left"><button class="btn btn-outline" id="prev-btn">← Previous</button><button class="btn btn-outline" id="clear-answer-btn">Clear answer</button></div>
-            <div class="q-actions-right"><button class="btn btn-secondary" id="hint-btn">Show hint</button><button class="btn btn-primary" id="next-btn">Next →</button></div>
-          </div>
-          <div class="start-row" style="border-top:1px solid var(--border);padding-top:18px"><span class="start-note">You can change answers before submitting.</span><button class="btn btn-primary" id="submit-btn">Submit test</button></div>
+          <div id="questions-list" class="questions-list"></div>
+          <div class="start-row submit-row"><span class="start-note">You can answer, check, and review each question before submitting.</span><button class="btn btn-primary" id="submit-btn">Submit test</button></div>
         </article>
         <aside class="sidebar">
           <div class="side-panel">
@@ -328,7 +329,7 @@ main.container { padding-bottom: 0; }
             <div class="question-map" id="question-map"></div>
             <div class="legend"><span>Filled underline = answered</span><span>Amber dot = marked for review</span></div>
             <div class="side-divider"></div>
-            <div class="side-buttons"><button class="btn btn-outline" id="flag-btn">⚑ Mark for review</button><button class="btn btn-outline" id="review-unanswered-btn">Go to unanswered</button></div>
+            <div class="side-buttons"><button class="btn btn-outline" id="review-unanswered-btn">Go to unanswered</button><button class="btn btn-primary" id="submit-side-btn" type="button">Submit test</button></div>
           </div>
         </aside>
       </div>
@@ -357,20 +358,60 @@ function displayStats(){}
 function showScreen(name){Object.values(screens).forEach(el=>el.classList.add('hidden'));screens[name].classList.remove('hidden');window.scrollTo({top:0,behavior:'smooth'});}
 function shuffle(arr){const a=[...arr];for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;}
 function selectedLength(){return 35;}
-function startQuiz(ids=null){let chosen=ids?ids.map(id=>QUESTIONS.find(q=>q.id===id)).filter(Boolean):[...QUESTIONS];const targetPositions=shuffle(Array.from({length:chosen.length},(_,i)=>i%4));state={questions:chosen.map((q,qi)=>{const right=q.options.find(o=>q.correct.includes(o.v));const distractors=shuffle(q.options.filter(o=>!q.correct.includes(o.v)));const answerIndex=targetPositions[qi];let di=0;const letters=['A','B','C','D'];const options=letters.map((v,i)=>({v,t:i===answerIndex?right.t:distractors[di++].t}));return {...q,options,correct:[letters[answerIndex]]};}),index:0,answers:{},flagged:new Set(),hints:new Set(),submitted:false,sourceIds:chosen.map(q=>q.id),lastResults:null};$('map-total').textContent=chosen.length+' total';showScreen('quiz');renderQuestion();}
-function currentQuestion(){return state.questions[state.index];}
+function startQuiz(ids=null){
+  let chosen=ids?ids.map(id=>QUESTIONS.find(q=>q.id===id)).filter(Boolean):[...QUESTIONS];
+  const targetPositions=shuffle(Array.from({length:chosen.length},(_,i)=>i%4));
+  state={
+    questions:chosen.map((q,qi)=>{
+      const right=q.options.find(o=>q.correct.includes(o.v));
+      const distractors=shuffle(q.options.filter(o=>!q.correct.includes(o.v)));
+      const answerIndex=targetPositions[qi];
+      let di=0;
+      const letters=['A','B','C','D'];
+      const options=letters.map((v,i)=>({v,t:i===answerIndex?right.t:distractors[di++].t}));
+      return {...q,options,correct:[letters[answerIndex]]};
+    }),
+    index:0,answers:{},flagged:new Set(),hints:new Set(),checkedAnswers:new Set(),
+    submitted:false,sourceIds:chosen.map(q=>q.id),lastResults:null
+  };
+  $('map-total').textContent=chosen.length+' total';
+  showScreen('quiz');
+  renderQuestion();
+}
 function isAnswered(q){return typeof state.answers[q.id]==='string'&&state.answers[q.id].trim().length>0;}
 function answeredCount(){return state.questions.filter(isAnswered).length;}
-function renderMap(){const map=$('question-map');map.innerHTML='';state.questions.forEach((q,i)=>{const b=document.createElement('button');b.type='button';b.className='map-btn'+(i===state.index?' active':'')+(isAnswered(q)?' answered':'')+(state.flagged.has(q.id)?' flagged':'');b.textContent=String(i+1);b.title='Question '+(i+1)+(isAnswered(q)?' · answered':'')+(state.flagged.has(q.id)?' · marked for review':'');b.addEventListener('click',()=>{state.index=i;renderQuestion();});map.appendChild(b);});}
-function renderQuestion(){const q=currentQuestion();if(!q)return;$('question-progress-label').textContent='Question '+(state.index+1)+' of '+state.questions.length;$('answered-label').textContent=answeredCount()+' answered';$('progress-fill').style.width=((state.index+1)/state.questions.length*100)+'%';$('question-number').textContent='Question '+(state.index+1);$('question-title').textContent=q.title;$('question-type').textContent='Select one';$('question-prompt').textContent=q.prompt;const area=$('answer-area');area.innerHTML='';const list=document.createElement('div');list.className='options';const saved=state.answers[q.id];q.options.forEach(o=>{const label=document.createElement('label');label.className='option';const input=document.createElement('input');input.type='radio';input.name='answer-'+q.id;input.value=o.v;input.checked=saved===o.v;input.addEventListener('change',()=>{state.answers[q.id]=o.v;state.checkedAnswers.delete(q.id);renderQuestion();});const letter=document.createElement('span');letter.className='letter';letter.textContent=o.v;const text=document.createElement('span');text.className='option-text';text.textContent=o.t;label.append(input,letter,text);list.appendChild(label);});area.appendChild(list);
-const checkButton=$('check-answer-btn');
-const feedback=$('check-answer-feedback');
-const hasAnswer=isAnswered(q);
-const wasChecked=state.checkedAnswers.has(q.id);
-checkButton.disabled=!hasAnswer;
-feedback.className='hidden';
-feedback.innerHTML='';
-if(wasChecked){
+function updateProgress(){
+  const total=state.questions.length;
+  const answered=answeredCount();
+  $('question-progress-label').textContent=total+' questions';
+  $('answered-label').textContent=answered+' / '+total+' answered';
+  $('progress-fill').style.width=(total?answered/total*100:0)+'%';
+}
+function renderMap(){
+  const map=$('question-map');
+  map.innerHTML='';
+  state.questions.forEach((q,i)=>{
+    const b=document.createElement('button');
+    b.type='button';
+    b.className='map-btn'+(i===state.index?' active':'')+(isAnswered(q)?' answered':'')+(state.flagged.has(q.id)?' flagged':'');
+    b.textContent=String(i+1);
+    b.title='Question '+(i+1)+(isAnswered(q)?' · answered':' · unanswered')+(state.flagged.has(q.id)?' · marked for review':'');
+    b.addEventListener('click',()=>{
+      state.index=i;
+      renderMap();
+      const card=document.getElementById('question-card-'+q.id);
+      if(card)card.scrollIntoView({behavior:'smooth',block:'start'});
+    });
+    map.appendChild(b);
+  });
+}
+function renderCardFeedback(q,card){
+  const checkButton=card.querySelector('.check-answer-btn');
+  const feedback=card.querySelector('.check-answer-feedback');
+  checkButton.disabled=!isAnswered(q);
+  feedback.replaceChildren();
+  feedback.className='check-answer-feedback hidden';
+  if(!state.checkedAnswers.has(q.id))return;
   const result=gradeQuestion(q);
   const correctOption=q.options.find(o=>q.correct.includes(o.v));
   const chosenOption=q.options.find(o=>o.v===result.answer);
@@ -386,22 +427,181 @@ if(wasChecked){
   explanation.textContent=q.explain;
   feedback.append(heading,answerLine,explanation);
 }
-$('prev-btn').disabled=state.index===0;$('next-btn').textContent=state.index===state.questions.length-1?'Finish questions →':'Next →';$('flag-btn').textContent=state.flagged.has(q.id)?'⚑ Remove review mark':'⚑ Mark for review';$('hint-btn').classList.remove('hidden');const hint=$('hint-area');if(state.hints.has(q.id)){hint.className='hint-box';hint.textContent=q.hint;}else{hint.className='hidden';hint.textContent='';}renderMap();}
-$('check-answer-btn').addEventListener('click',()=>{
-  const q=currentQuestion();
-  if(!q||!isAnswered(q))return;
-  state.checkedAnswers.add(q.id);
-  renderQuestion();
-});
+function buildQuestionCard(q,i){
+  const card=document.createElement('article');
+  card.className='question-item';
+  card.id='question-card-'+q.id;
+  card.dataset.questionId=String(q.id);
+
+  const header=document.createElement('div');
+  header.className='q-title-row';
+  const titleBlock=document.createElement('div');
+  const number=document.createElement('div');
+  number.className='q-number';
+  number.textContent='Question '+(i+1);
+  const title=document.createElement('h2');
+  title.textContent=q.title;
+  titleBlock.append(number,title);
+  const type=document.createElement('span');
+  type.className='type-pill';
+  type.textContent='Select one';
+  header.append(titleBlock,type);
+  card.appendChild(header);
+
+  const prompt=document.createElement('p');
+  prompt.className='q-prompt';
+  prompt.textContent=q.prompt;
+  card.appendChild(prompt);
+
+  if(q.code){
+    const code=document.createElement('pre');
+    code.className='code-block';
+    code.textContent=q.code;
+    card.appendChild(code);
+  }
+
+  const options=document.createElement('div');
+  options.className='options';
+  q.options.forEach(o=>{
+    const label=document.createElement('label');
+    label.className='option';
+    const input=document.createElement('input');
+    input.type='radio';
+    input.name='answer-'+q.id;
+    input.value=o.v;
+    input.checked=state.answers[q.id]===o.v;
+    input.addEventListener('change',()=>{
+      state.answers[q.id]=o.v;
+      state.checkedAnswers.delete(q.id);
+      state.index=i;
+      renderCardFeedback(q,card);
+      updateProgress();
+      renderMap();
+    });
+    const letter=document.createElement('span');
+    letter.className='letter';
+    letter.textContent=o.v;
+    const optionText=document.createElement('span');
+    optionText.className='option-text';
+    optionText.textContent=o.t;
+    label.append(input,letter,optionText);
+    options.appendChild(label);
+  });
+  card.appendChild(options);
+
+  const checkSection=document.createElement('section');
+  checkSection.className='check-answer-section';
+  const checkTitle=document.createElement('h3');
+  checkTitle.textContent='Check the answer';
+  const checkDescription=document.createElement('p');
+  checkDescription.textContent='Choose an option, then check it to see the correct answer and explanation.';
+  const checkButton=document.createElement('button');
+  checkButton.type='button';
+  checkButton.className='btn btn-secondary check-answer-btn';
+  checkButton.textContent='Check answer';
+  const feedback=document.createElement('div');
+  feedback.className='check-answer-feedback hidden';
+  feedback.setAttribute('aria-live','polite');
+  checkButton.addEventListener('click',()=>{
+    if(!isAnswered(q))return;
+    state.checkedAnswers.add(q.id);
+    renderCardFeedback(q,card);
+  });
+  checkSection.append(checkTitle,checkDescription,checkButton,feedback);
+  card.appendChild(checkSection);
+
+  const hint=document.createElement('div');
+  hint.className='hint-box'+(state.hints.has(q.id)?'':' hidden');
+  hint.textContent=q.hint;
+
+  const actions=document.createElement('div');
+  actions.className='q-actions';
+  const left=document.createElement('div');
+  left.className='q-actions-left';
+  const clearButton=document.createElement('button');
+  clearButton.type='button';
+  clearButton.className='btn btn-outline';
+  clearButton.textContent='Clear answer';
+  clearButton.disabled=!isAnswered(q);
+  clearButton.addEventListener('click',()=>{
+    delete state.answers[q.id];
+    state.checkedAnswers.delete(q.id);
+    card.querySelectorAll('input[type="radio"]').forEach(input=>input.checked=false);
+    clearButton.disabled=true;
+    renderCardFeedback(q,card);
+    updateProgress();
+    renderMap();
+  });
+  left.appendChild(clearButton);
+
+  const right=document.createElement('div');
+  right.className='q-actions-right';
+  const hintButton=document.createElement('button');
+  hintButton.type='button';
+  hintButton.className='btn btn-secondary';
+  hintButton.textContent=state.hints.has(q.id)?'Hide hint':'Show hint';
+  hintButton.addEventListener('click',()=>{
+    if(state.hints.has(q.id)){
+      state.hints.delete(q.id);
+      hint.classList.add('hidden');
+      hintButton.textContent='Show hint';
+    }else{
+      state.hints.add(q.id);
+      hint.classList.remove('hidden');
+      hintButton.textContent='Hide hint';
+    }
+  });
+  const flagButton=document.createElement('button');
+  flagButton.type='button';
+  flagButton.className='btn btn-outline';
+  flagButton.textContent=state.flagged.has(q.id)?'⚑ Remove review mark':'⚑ Mark for review';
+  flagButton.addEventListener('click',()=>{
+    if(state.flagged.has(q.id))state.flagged.delete(q.id);
+    else state.flagged.add(q.id);
+    flagButton.textContent=state.flagged.has(q.id)?'⚑ Remove review mark':'⚑ Mark for review';
+    state.index=i;
+    renderMap();
+  });
+  right.append(hintButton,flagButton);
+  actions.append(left,right);
+  card.append(hint,actions);
+  return card;
+}
+function renderQuestion(){
+  const root=$('questions-list');
+  root.replaceChildren();
+  state.questions.forEach((q,i)=>root.appendChild(buildQuestionCard(q,i)));
+  updateProgress();
+  renderMap();
+}
 $('start-btn').addEventListener('click',()=>startQuiz());
-$('prev-btn').addEventListener('click',()=>{if(state.index>0){state.index--;renderQuestion();}});
-$('next-btn').addEventListener('click',()=>{if(state.index<state.questions.length-1){state.index++;renderQuestion();}else submitQuiz();});
-$('clear-answer-btn').addEventListener('click',()=>{const id=currentQuestion().id;delete state.answers[id];state.checkedAnswers.delete(id);renderQuestion();});
-$('hint-btn').addEventListener('click',()=>{const id=currentQuestion().id;if(state.hints.has(id))state.hints.delete(id);else state.hints.add(id);renderQuestion();});
-$('flag-btn').addEventListener('click',()=>{const id=currentQuestion().id;if(state.flagged.has(id))state.flagged.delete(id);else state.flagged.add(id);renderQuestion();});
-$('review-unanswered-btn').addEventListener('click',()=>{const i=state.questions.findIndex(q=>!isAnswered(q));if(i>=0){state.index=i;renderQuestion();}else{alert('You have answered every question in this session. You can submit the test now.');}});
-$('exit-btn').addEventListener('click',()=>{if(confirm('Exit this attempt? Your answers in the current attempt will be discarded.')){showScreen('home');displayStats();}});
-$('submit-btn').addEventListener('click',()=>{const unanswered=state.questions.filter(q=>!isAnswered(q)).length;const msg=unanswered?'You have '+unanswered+' unanswered question(s). Submit anyway?':'Submit and mark this test?';if(confirm(msg))submitQuiz();});
+$('review-unanswered-btn').addEventListener('click',()=>{
+  const i=state.questions.findIndex(q=>!isAnswered(q));
+  if(i>=0){
+    state.index=i;
+    renderMap();
+    const card=document.getElementById('question-card-'+state.questions[i].id);
+    if(card)card.scrollIntoView({behavior:'smooth',block:'start'});
+  }else{
+    alert('You have answered every question in this session. You can submit the test now.');
+  }
+});
+function askSubmit(){
+  const unanswered=state.questions.filter(q=>!isAnswered(q)).length;
+  const msg=unanswered
+    ? 'You have '+unanswered+' unanswered question(s). Submit anyway?'
+    : 'Submit and mark this test?';
+  if(confirm(msg))submitQuiz();
+}
+$('submit-btn').addEventListener('click',askSubmit);
+$('submit-side-btn').addEventListener('click',askSubmit);
+$('exit-btn').addEventListener('click',()=>{
+  if(confirm('Exit this attempt? Your answers in the current attempt will be discarded.')){
+    showScreen('home');
+    displayStats();
+  }
+});
+
 function gradeQuestion(q){const answer=state.answers[q.id]||'';const expected=q.correct;const correct=expected.includes(answer);return {correct,answer,expected};}
 function element(tag,className,content){const el=document.createElement(tag);if(className)el.className=className;if(content!==undefined)el.textContent=content;return el;}
 function renderReview(results){const root=$('review-list');root.innerHTML='';results.forEach((r,i)=>{const q=r.q,g=r.grade;const card=element('article','review-item '+(g.correct?'correct':'wrong'));const heading=element('h3','',(i+1)+'. '+q.title);const status=element('span','status '+(g.correct?'good':'bad'),g.correct?'Correct':(!g.answer?'Unanswered':'Incorrect'));heading.appendChild(status);card.appendChild(heading);card.appendChild(element('p','muted small',q.prompt));const chosen=q.options.find(o=>o.v===g.answer);const expected=q.options.find(o=>g.expected.includes(o.v));card.appendChild(element('p','', 'Your answer: '+(chosen?chosen.v+'. '+chosen.t:'(blank)')));card.appendChild(element('p','', 'Correct answer: '+(expected?expected.v+'. '+expected.t:q.correct.join(', '))));card.appendChild(element('p','',q.explain));const feedback=element('div','feedback-list');q.options.forEach(o=>{const line=element('div','feedback-line '+(g.expected.includes(o.v)?'correct':(o.v===g.answer?'wrong':'')),(g.expected.includes(o.v)?'Expected · ':'')+o.v+'. '+o.t);feedback.appendChild(line);});card.appendChild(feedback);root.appendChild(card);});}
