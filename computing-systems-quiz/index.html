@@ -198,6 +198,34 @@ select, .text-input { background: var(--surface); border: 1px solid var(--border
   .result-stats { grid-template-columns: 1fr 1fr; }
 }
 @media (prefers-reduced-motion: reduce) { *, *::before, *::after { transition: none !important; animation: none !important; scroll-behavior: auto !important; } }
+
+.launch-panel {
+  width: min(680px, 100%);
+  margin: clamp(42px, 10vh, 100px) auto;
+  padding: clamp(28px, 6vw, 54px);
+  text-align: center;
+  border: 1px solid var(--border);
+  border-radius: 22px;
+  background: var(--surface);
+  box-shadow: 0 18px 50px rgba(15, 30, 55, .08);
+}
+.launch-panel h1 {
+  margin: 14px 0 12px;
+  font-size: clamp(2.2rem, 6vw, 3.4rem);
+}
+.launch-panel .lede {
+  margin: 0 auto 26px;
+  font-size: 1rem;
+}
+.launch-button {
+  min-width: 190px;
+  padding: 15px 24px;
+  font-size: 1rem;
+}
+.launch-panel .start-note {
+  display: block;
+  margin-top: 16px;
+}
 </style>
 </head>
 <body>
@@ -211,64 +239,13 @@ select, .text-input { background: var(--surface); border: 1px solid var(--border
   </header>
   <main class="container">
     <section id="home-screen">
-      <div class="hero">
-        <div>
-          <div class="eyebrow">Your personal exam practice</div>
-          <h1>Know the pattern.<br>Own the question.</h1>
-          <p class="lede">Practise all 35 Computing Systems questions in a multiple-choice exam. Select an answer for each question, navigate freely, submit the test, and review every mistake.</p>
-          <div class="stats">
-            <div class="stat"><b>35</b><span>Original questions</span></div>
-            <div class="stat"><b>∞</b><span>Practice attempts</span></div>
-            <div class="stat"><b>Instant</b><span>Score & review</span></div>
-          </div>
-        </div>
-        <div class="hero-card">
-          <div class="eyebrow" style="color:var(--site-on-secondary)">Personal practice lab</div>
-          <div class="big-number" id="hero-best">—</div>
-          <p id="hero-best-label">Your best result will appear here after your first attempt.</p>
-        </div>
+      <div class="launch-panel">
+        <div class="eyebrow">Computing Systems · Exam Practice</div>
+        <h1>Ready to start?</h1>
+        <p class="lede">35 multiple-choice questions. Choose one answer for each question, move through the exam, then submit to see your score and corrections.</p>
+        <button class="btn btn-primary launch-button" id="start-btn" type="button">Start Exam →</button>
+        <p class="start-note">Full exam · 35 questions · No setup required</p>
       </div>
-
-      <section class="panel page-section">
-        <div class="section-head"><div><h2>Set up your session</h2><p class="muted small" style="margin-bottom:0">Choose the length and difficulty style. The original questions stay in the bank.</p></div></div>
-        <div class="settings-grid">
-          <div class="setting-block">
-            <span class="field-label">Quiz length</span>
-            <label class="mode-choice"><input type="radio" name="length" value="35" checked><span><strong>Full exam</strong><span>All 35 questions, in original order</span></span></label>
-            <div class="choice-row">
-              <label class="mode-choice"><input type="radio" name="length" value="10"><span><strong>Quick 10</strong><span>Short practice round</span></span></label>
-              <label class="mode-choice"><input type="radio" name="length" value="20"><span><strong>Quick 20</strong><span>Medium practice round</span></span></label>
-            </div>
-          </div>
-          <div class="setting-block">
-            <span class="field-label">Practice options</span>
-            <div class="toggle-list">
-              <label class="toggle"><input id="shuffle-questions" type="checkbox"> Randomize question order</label>
-              <label class="toggle"><input id="shuffle-options" type="checkbox"> Shuffle distractor order</label>
-              <label class="toggle"><input id="study-mode" type="checkbox"> Study mode: show answer hints during the test</label>
-            </div>
-            <p class="muted small" style="margin:12px 0 0">Exam mode hides hints until you submit. Study mode lets you reveal a hint while practising.</p>
-          </div>
-        </div>
-        <div class="start-row">
-          <span class="start-note">No account required. This preview keeps practice stats in this browser when storage is available.</span>
-          <button class="btn btn-primary" id="start-btn">Start practice →</button>
-        </div>
-      </section>
-
-      <section class="panel page-section">
-        <div class="section-head"><div><h2>Question bank</h2><p class="muted small" style="margin-bottom:0">The full source set, grouped by topic.</p></div><span class="type-pill">15 questions</span></div>
-        <div class="bank-grid" id="bank-grid"></div>
-      </section>
-      <section class="panel page-section">
-        <div class="section-head"><div><h2>Your practice stats</h2><p class="muted small" style="margin-bottom:0">A simple record of this browser's attempts.</p></div></div>
-        <div class="stats">
-          <div class="stat"><b id="attempt-count">0</b><span>Completed attempts</span></div>
-          <div class="stat"><b id="best-score">—</b><span>Best score</span></div>
-          <div class="stat"><b id="last-score">—</b><span>Last score</span></div>
-        </div>
-        <div style="margin-top:14px"><button id="clear-stats" class="btn btn-outline">Clear saved stats</button></div>
-      </section>
     </section>
 
     <section id="quiz-screen" class="hidden">
@@ -322,22 +299,21 @@ const screens = {home:$('home-screen'),quiz:$('quiz-screen'),results:$('results-
 let state = {questions:[],index:0,answers:{},flagged:new Set(),hints:new Set(),submitted:false,sourceIds:[],lastResults:null};
 function safeLoadStats(){try{return JSON.parse(localStorage.getItem('computingSystemsExamStats')||'{"attempts":0,"best":null,"last":null}');}catch(e){return {attempts:0,best:null,last:null};}}
 function saveStats(s){try{localStorage.setItem('computingSystemsExamStats',JSON.stringify(s));}catch(e){}}
-function displayStats(){const s=safeLoadStats();$('attempt-count').textContent=s.attempts||0;$('best-score').textContent=s.best==null?'—':s.best+'%';$('last-score').textContent=s.last==null?'—':s.last+'%';$('hero-best').textContent=s.best==null?'Ready?':s.best+'%';$('hero-best-label').textContent=s.best==null?'Your best result will appear here after your first attempt.':'Best result across saved attempts. Keep practising to improve it.';}
+function displayStats(){}
 function showScreen(name){Object.values(screens).forEach(el=>el.classList.add('hidden'));screens[name].classList.remove('hidden');window.scrollTo({top:0,behavior:'smooth'});}
 function shuffle(arr){const a=[...arr];for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;}
-function selectedLength(){return Number(document.querySelector('input[name="length"]:checked')?.value||35);}
-function renderBank(){const root=$('bank-grid');root.innerHTML='';QUESTIONS.forEach(q=>{const tile=document.createElement('div');tile.className='bank-tile';const b=document.createElement('b');b.textContent=String(q.id).padStart(2,'0')+' · '+q.topic;const span=document.createElement('span');span.textContent=q.title;tile.append(b,span);root.appendChild(tile);});}
-function startQuiz(ids=null,opts={}){let chosen=ids?ids.map(id=>QUESTIONS.find(q=>q.id===id)).filter(Boolean):[...QUESTIONS];if(!ids&&chosen.length>selectedLength())chosen=shuffle(chosen).slice(0,selectedLength());if(($('shuffle-questions').checked||opts.shuffleQuestions)&&chosen.length>1)chosen=shuffle(chosen);const shuffleDistractors=$('shuffle-options').checked||opts.shuffleOptions;const targetPositions=shuffle(Array.from({length:chosen.length},(_,i)=>i%4));state={questions:chosen.map((q,qi)=>{const right=q.options.find(o=>q.correct.includes(o.v));const distractors=q.options.filter(o=>!q.correct.includes(o.v));const pool=shuffleDistractors?shuffle(distractors):distractors;const answerIndex=targetPositions[qi];let di=0;const letters=['A','B','C','D'];const options=letters.map((v,i)=>({v,t:i===answerIndex?right.t:pool[di++].t}));return {...q,options,correct:[letters[answerIndex]]};}),index:0,answers:{},flagged:new Set(),hints:new Set(),submitted:false,sourceIds:chosen.map(q=>q.id),lastResults:null};$('map-total').textContent=chosen.length+' total';showScreen('quiz');renderQuestion();}
+function selectedLength(){return 35;}
+function startQuiz(ids=null,opts={}){let chosen=ids?ids.map(id=>QUESTIONS.find(q=>q.id===id)).filter(Boolean):[...QUESTIONS];if(opts.shuffleQuestions&&chosen.length>1)chosen=shuffle(chosen);const targetPositions=shuffle(Array.from({length:chosen.length},(_,i)=>i%4));state={questions:chosen.map((q,qi)=>{const right=q.options.find(o=>q.correct.includes(o.v));const distractors=shuffle(q.options.filter(o=>!q.correct.includes(o.v)));const answerIndex=targetPositions[qi];let di=0;const letters=['A','B','C','D'];const options=letters.map((v,i)=>({v,t:i===answerIndex?right.t:distractors[di++].t}));return {...q,options,correct:[letters[answerIndex]]};}),index:0,answers:{},flagged:new Set(),hints:new Set(),submitted:false,sourceIds:chosen.map(q=>q.id),lastResults:null};$('map-total').textContent=chosen.length+' total';showScreen('quiz');renderQuestion();}
 function currentQuestion(){return state.questions[state.index];}
 function isAnswered(q){return typeof state.answers[q.id]==='string'&&state.answers[q.id].trim().length>0;}
 function answeredCount(){return state.questions.filter(isAnswered).length;}
 function renderMap(){const map=$('question-map');map.innerHTML='';state.questions.forEach((q,i)=>{const b=document.createElement('button');b.type='button';b.className='map-btn'+(i===state.index?' active':'')+(isAnswered(q)?' answered':'')+(state.flagged.has(q.id)?' flagged':'');b.textContent=String(i+1);b.title='Question '+(i+1)+(isAnswered(q)?' · answered':'')+(state.flagged.has(q.id)?' · marked for review':'');b.addEventListener('click',()=>{state.index=i;renderQuestion();});map.appendChild(b);});}
-function renderQuestion(){const q=currentQuestion();if(!q)return;$('question-progress-label').textContent='Question '+(state.index+1)+' of '+state.questions.length;$('answered-label').textContent=answeredCount()+' answered';$('progress-fill').style.width=((state.index+1)/state.questions.length*100)+'%';$('question-number').textContent='Question '+(state.index+1);$('question-title').textContent=q.title;$('question-type').textContent='Select one';$('question-prompt').textContent=q.prompt;const area=$('answer-area');area.innerHTML='';const list=document.createElement('div');list.className='options';const saved=state.answers[q.id];q.options.forEach(o=>{const label=document.createElement('label');label.className='option';const input=document.createElement('input');input.type='radio';input.name='answer-'+q.id;input.value=o.v;input.checked=saved===o.v;input.addEventListener('change',()=>{state.answers[q.id]=o.v;renderMap();$('answered-label').textContent=answeredCount()+' answered';});const letter=document.createElement('span');letter.className='letter';letter.textContent=o.v;const text=document.createElement('span');text.className='option-text';text.textContent=o.t;label.append(input,letter,text);list.appendChild(label);});area.appendChild(list);$('prev-btn').disabled=state.index===0;$('next-btn').textContent=state.index===state.questions.length-1?'Finish questions →':'Next →';$('flag-btn').textContent=state.flagged.has(q.id)?'⚑ Remove review mark':'⚑ Mark for review';$('hint-btn').classList.toggle('hidden',!$('study-mode').checked);const hint=$('hint-area');if(state.hints.has(q.id)&&$('study-mode').checked){hint.className='hint-box';hint.textContent=q.hint;}else{hint.className='hidden';hint.textContent='';}renderMap();}
+function renderQuestion(){const q=currentQuestion();if(!q)return;$('question-progress-label').textContent='Question '+(state.index+1)+' of '+state.questions.length;$('answered-label').textContent=answeredCount()+' answered';$('progress-fill').style.width=((state.index+1)/state.questions.length*100)+'%';$('question-number').textContent='Question '+(state.index+1);$('question-title').textContent=q.title;$('question-type').textContent='Select one';$('question-prompt').textContent=q.prompt;const area=$('answer-area');area.innerHTML='';const list=document.createElement('div');list.className='options';const saved=state.answers[q.id];q.options.forEach(o=>{const label=document.createElement('label');label.className='option';const input=document.createElement('input');input.type='radio';input.name='answer-'+q.id;input.value=o.v;input.checked=saved===o.v;input.addEventListener('change',()=>{state.answers[q.id]=o.v;renderMap();$('answered-label').textContent=answeredCount()+' answered';});const letter=document.createElement('span');letter.className='letter';letter.textContent=o.v;const text=document.createElement('span');text.className='option-text';text.textContent=o.t;label.append(input,letter,text);list.appendChild(label);});area.appendChild(list);$('prev-btn').disabled=state.index===0;$('next-btn').textContent=state.index===state.questions.length-1?'Finish questions →':'Next →';$('flag-btn').textContent=state.flagged.has(q.id)?'⚑ Remove review mark':'⚑ Mark for review';$('hint-btn').classList.remove('hidden');const hint=$('hint-area');if(state.hints.has(q.id)&&$('study-mode').checked){hint.className='hint-box';hint.textContent=q.hint;}else{hint.className='hidden';hint.textContent='';}renderMap();}
 $('start-btn').addEventListener('click',()=>startQuiz());
 $('prev-btn').addEventListener('click',()=>{if(state.index>0){state.index--;renderQuestion();}});
 $('next-btn').addEventListener('click',()=>{if(state.index<state.questions.length-1){state.index++;renderQuestion();}else submitQuiz();});
 $('clear-answer-btn').addEventListener('click',()=>{delete state.answers[currentQuestion().id];renderQuestion();});
-$('hint-btn').addEventListener('click',()=>{if(!$('study-mode').checked)return;const id=currentQuestion().id;if(state.hints.has(id))state.hints.delete(id);else state.hints.add(id);renderQuestion();});
+$('hint-btn').addEventListener('click',()=>{const id=currentQuestion().id;if(state.hints.has(id))state.hints.delete(id);else state.hints.add(id);renderQuestion();});
 $('flag-btn').addEventListener('click',()=>{const id=currentQuestion().id;if(state.flagged.has(id))state.flagged.delete(id);else state.flagged.add(id);renderQuestion();});
 $('review-unanswered-btn').addEventListener('click',()=>{const i=state.questions.findIndex(q=>!isAnswered(q));if(i>=0){state.index=i;renderQuestion();}else{alert('You have answered every question in this session. You can submit the test now.');}});
 $('exit-btn').addEventListener('click',()=>{if(confirm('Exit this attempt? Your answers in the current attempt will be discarded.')){showScreen('home');displayStats();}});
@@ -349,14 +325,13 @@ function submitQuiz(){state.submitted=true;const results=state.questions.map(q=>
 function retryIds(ids){if(!ids.length){alert('No missed questions in that session.');return;}startQuiz(ids,{shuffleQuestions:false,shuffleOptions:false});}
 $('retry-wrong-btn').addEventListener('click',()=>retryIds((state.lastResults||[]).filter(r=>!r.grade.correct).map(r=>r.q.id)));
 $('retake-btn').addEventListener('click',()=>startQuiz(state.sourceIds,{shuffleQuestions:false,shuffleOptions:false}));
-$('new-random-btn').addEventListener('click',()=>{document.querySelector('input[name="length"][value="35"]').checked=true;$('shuffle-questions').checked=true;$('shuffle-options').checked=true;startQuiz();});
+$('new-random-btn').addEventListener('click',()=>startQuiz(null,{shuffleQuestions:true}));
 const goHome=()=>{showScreen('home');displayStats();};$('results-home-btn').addEventListener('click',goHome);$('home-bottom-btn').addEventListener('click',goHome);
 $('clear-stats').addEventListener('click',()=>{if(confirm('Clear saved attempt count and scores in this browser?')){saveStats({attempts:0,best:null,last:null});displayStats();}});
 function applyTheme(mode,persist=true){const theme=mode==='dark'?'dark':'light';document.documentElement.style.colorScheme=theme;document.documentElement.dataset.theme=theme;const button=$('theme-toggle');button.textContent=theme==='dark'?'☀ Light mode':'☾ Night mode';button.setAttribute('aria-pressed',String(theme==='dark'));if(persist){try{localStorage.setItem('computingSystemsExamTheme',theme);}catch(e){}}}
 function loadTheme(){let saved=null;try{saved=localStorage.getItem('computingSystemsExamTheme');}catch(e){}if(saved!=='dark'&&saved!=='light')saved=window.matchMedia&&window.matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light';applyTheme(saved,false);}
 loadTheme();$('theme-toggle').addEventListener('click',()=>applyTheme(document.documentElement.dataset.theme==='dark'?'light':'dark'));
 $('new-random-btn').textContent='New randomized exam';
-renderBank();displayStats();
 </script>
 </body>
 </html>
