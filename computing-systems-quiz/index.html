@@ -226,29 +226,57 @@ select, .text-input { background: var(--surface); border: 1px solid var(--border
   display: block;
   margin-top: 16px;
 }
+
+body { min-height: 100vh; }
+#app-root { min-height: 100vh; }
+main.container { padding-bottom: 0; }
+.entry-screen {
+  min-height: 100vh;
+  display: grid;
+  place-items: center;
+  text-align: center;
+}
+.entry-content {
+  display: grid;
+  justify-items: center;
+  gap: 16px;
+  width: 100%;
+  padding: 24px;
+}
+.entry-title {
+  font-size: clamp(1.25rem, 3vw, 1.8rem);
+  font-weight: 850;
+  letter-spacing: .12em;
+}
+.entry-count {
+  color: var(--text-muted);
+  font-size: .78rem;
+  font-weight: 750;
+  letter-spacing: .16em;
+}
+.launch-button {
+  min-width: min(300px, 86vw);
+  min-height: 82px;
+  margin-top: 12px;
+  padding: 18px 34px;
+  border-radius: 14px;
+  font-size: 1.25rem;
+  font-weight: 900;
+  letter-spacing: .12em;
+}
 </style>
 </head>
 <body>
-
 <div id="app-root">
-  <header class="topbar">
-    <div class="container nav-inner">
-      <div class="brand"><div class="brand-mark">CS</div><div>COMPUTING SYSTEMS<small>EXAM PRACTICE</small></div></div>
-      <div class="nav-actions"><div class="nav-note">Practice · Check · Repeat</div><button class="theme-toggle" id="theme-toggle" type="button" aria-pressed="false">☾ Night mode</button></div>
-    </div>
-  </header>
   <main class="container">
-    <section id="home-screen">
-      <div class="launch-panel">
-        <div class="eyebrow">Computing Systems · Exam Practice</div>
-        <h1>Ready to start?</h1>
-        <p class="lede">35 multiple-choice questions. Choose one answer for each question, move through the exam, then submit to see your score and corrections.</p>
-        <button class="btn btn-primary launch-button" id="start-btn" type="button">Start Exam →</button>
-        <p class="start-note">Full exam · 35 questions · No setup required</p>
+    <section id="home-screen" class="entry-screen">
+      <div class="entry-content">
+        <div class="entry-title">COMPUTING SYSTEMS</div>
+        <div class="entry-count">35 QUESTIONS</div>
+        <button class="btn btn-primary launch-button" id="start-btn" type="button">START EXAM</button>
       </div>
     </section>
-
-    <section id="quiz-screen" class="hidden">
+<section id="quiz-screen" class="hidden">
       <div class="quiz-top">
         <div><div class="eyebrow">Active session</div><h2 style="margin:4px 0 0">Exam practice</h2></div>
         <div class="q-actions-right"><button class="btn btn-outline" id="exit-btn">Exit to home</button></div>
@@ -288,7 +316,7 @@ select, .text-input { background: var(--surface); border: 1px solid var(--border
       <div class="results-actions"><button class="btn btn-primary" id="retry-wrong-btn">Retry missed questions</button><button class="btn btn-secondary" id="retake-btn">Retake this test</button><button class="btn btn-outline" id="new-random-btn">New randomized test</button><button class="btn btn-outline" id="home-bottom-btn">Home</button></div>
       <p class="result-note">Code questions are checked against key patterns to provide quick feedback. Compare the model answer too: equivalent correct C solutions can differ in formatting or implementation details.</p>
     </section>
-    <footer class="footer">Computing Systems Lab · Multiple-choice exam practice · 35 questions with instant feedback.</footer>
+    
   </main>
 </div>
 
@@ -330,7 +358,7 @@ const goHome=()=>{showScreen('home');displayStats();};$('results-home-btn').addE
 
 function applyTheme(mode,persist=true){const theme=mode==='dark'?'dark':'light';document.documentElement.style.colorScheme=theme;document.documentElement.dataset.theme=theme;const button=$('theme-toggle');button.textContent=theme==='dark'?'☀ Light mode':'☾ Night mode';button.setAttribute('aria-pressed',String(theme==='dark'));if(persist){try{localStorage.setItem('computingSystemsExamTheme',theme);}catch(e){}}}
 function loadTheme(){let saved=null;try{saved=localStorage.getItem('computingSystemsExamTheme');}catch(e){}if(saved!=='dark'&&saved!=='light')saved=window.matchMedia&&window.matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light';applyTheme(saved,false);}
-loadTheme();$('theme-toggle').addEventListener('click',()=>applyTheme(document.documentElement.dataset.theme==='dark'?'light':'dark'));
+
 $('new-random-btn').textContent='New randomized exam';
 </script>
 </body>
